@@ -149,7 +149,7 @@ function playWoodClack(delay = 0, pitch = 1, volume = 0.6) {
   }
 }
 
-// Sound synthesizer: Stick rattle
+// Sound synthesizer: Stick rattle ("lóc cóc" sound of multiple sticks colliding in hollow cup)
 function playStickRattle() {
   if (!soundEnabled) return;
   try {
@@ -157,10 +157,14 @@ function playStickRattle() {
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
-    // High-pitched wood clacks in quick succession representing wooden sticks colliding
-    playWoodClack(0, 1.4, 0.4);
-    playWoodClack(0.02, 1.8, 0.3);
-    playWoodClack(0.04, 1.2, 0.2);
+    // Play 5 to 7 micro-clacks in quick succession with random pitch and volumes
+    const clacks = 5 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < clacks; i++) {
+      const delay = i * 0.015 + Math.random() * 0.01;
+      const pitch = 0.85 + Math.random() * 0.8;
+      const volume = 0.15 + Math.random() * 0.25;
+      playWoodClack(delay, pitch, volume);
+    }
   } catch (e) {
     console.error("Audio Playback Error:", e);
   }
@@ -289,7 +293,68 @@ function goToShake() {
   risingStick.classList.remove('draw-out');
   risingStick.classList.add('hidden');
   
+  // Request DeviceMotionEvent permission for iOS 13+
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('devicemotion', handleDeviceMotion, true);
+        }
+      })
+      .catch(err => {
+        console.warn("DeviceMotion Permission Denied or Error:", err);
+      });
+  } else {
+    // For Android or older browsers, listen directly
+    window.addEventListener('devicemotion', handleDeviceMotion, true);
+  }
+  
   showSection('shake');
+}
+
+// Device Shaking Detection variables
+let lastX = null, lastY = null, lastZ = null;
+let lastShakeTime = 0;
+const SHAKE_THRESHOLD = 18; // Sensible acceleration threshold
+
+// Handle Device Motion event (Shake Phone to Shake sticks)
+function handleDeviceMotion(event) {
+  if (currentStep !== 'shake' || shakeLock || shakeCount >= 11) return;
+  
+  // Get acceleration with gravity (more widely supported on mobile devices)
+  let acc = event.acceleration || event.accelerationIncludingGravity;
+  if (!acc) return;
+  
+  let x = acc.x || 0;
+  let y = acc.y || 0;
+  let z = acc.z || 0;
+  
+  if (lastX === null) {
+    lastX = x;
+    lastY = y;
+    lastZ = z;
+    return;
+  }
+  
+  let deltaX = Math.abs(x - lastX);
+  let deltaY = Math.abs(y - lastY);
+  let deltaZ = Math.abs(z - lastZ);
+  
+  // Check if phone moves vigorously on at least two axes
+  if ((deltaX > SHAKE_THRESHOLD && deltaY > SHAKE_THRESHOLD) || 
+      (deltaX > SHAKE_THRESHOLD && deltaZ > SHAKE_THRESHOLD) || 
+      (deltaY > SHAKE_THRESHOLD && deltaZ > SHAKE_THRESHOLD)) {
+    
+    const now = Date.now();
+    if (now - lastShakeTime > 250) { // debounce: 250ms
+      lastShakeTime = now;
+      handleShakeTap(); // Trigger a shake increment
+    }
+  }
+  
+  lastX = x;
+  lastY = y;
+  lastZ = z;
 }
 
 // Stage 2: Click or Tap to shake tube
@@ -714,8 +779,43 @@ function saveAsImage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    // Show premium visual success feedback
+    showToast("Đã lưu ảnh quẻ xăm thành công!");
   } catch (err) {
     console.error("Lỗi khi xuất ảnh: ", err);
     alert("Không thể lưu ảnh tự động. Xin hãy thử lại trên trình duyệt khác hoặc chụp ảnh màn hình.");
   }
+}
+
+// Show a beautiful temporary toast message
+function showToast(message) {
+  // Remove existing toast if any
+  const oldToast = document.querySelector('.toast-message');
+  if (oldToast) {
+    document.body.removeChild(oldToast);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `toast-message`;
+  toast.innerHTML = `
+    <span class="toast-icon">✨</span>
+    <span class="toast-text">${message}</span>
+  `;
+  document.body.appendChild(toast);
+  
+  // Slide up and fade in
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 10);
+  
+  // Slide down and fade out
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      if (document.body.contains(toast)) {
+        document.body.removeChild(toast);
+      }
+    }, 400);
+  }, 3500);
 }
