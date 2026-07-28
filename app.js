@@ -138,9 +138,6 @@ function initAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
-  if (soundEnabled && !isMeditationPlaying) {
-    startMeditationMusic();
-  }
 }
 
 // Sound synthesizer: Wooden clack
@@ -212,6 +209,9 @@ function tossKeo() {
   
   // Initialize audio on click interaction
   initAudio();
+  if (soundEnabled && !isMeditationPlaying) {
+    startMeditationMusic();
+  }
   
   tossLock = true;
   attemptsCount++;
