@@ -1216,15 +1216,57 @@ input[type="text"]:focus, textarea:focus {
 }
 
 /* Mobile responsive fixes */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  .scroll-wrapper {
+    max-height: 430px;
+  }
+}
+
 @media (max-width: 480px) {
   .logo-title {
     font-size: 1.8rem;
   }
-  .card {
-    padding: 20px 15px;
+  .logo-subtitle {
+    font-size: 0.85rem;
   }
+  .card {
+    padding: 15px 12px;
+    border-width: 2px;
+  }
+  .card-body {
+    padding: 10px 5px;
+  }
+  
+  /* Mode selector vertical layout */
+  .mode-selector {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mode-card {
+    padding: 12px 15px;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+  }
+  .mode-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0;
+  }
+  .mode-title {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+  .mode-desc {
+    font-size: 0.75rem;
+  }
+  
+  /* Keo playground scaling */
   .keo-playground {
-    height: 190px;
+    height: 180px;
   }
   .wooden-plate {
     width: 220px;
@@ -1235,9 +1277,111 @@ input[type="text"]:focus, textarea:focus {
     height: 90px;
   }
   .keo-face {
-    border-radius: 25px 25px 0 0 / 45px 45px 0 0;
+    border-radius: 25px 25px 0 0 / 90px 90px 0 0;
+  }
+  .keo-ngua::after {
+    font-size: 1.8rem;
+    border-radius: 20px 20px 0 0 / 80px 80px 0 0;
+    margin: 3px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+  }
+  
+  /* Tube container & Sticks scaling */
+  .tube-container {
+    height: 230px;
+  }
+  .bamboo-tube {
+    width: 85px;
+    height: 155px;
+  }
+  .sticks-inside {
+    top: -35px;
+    left: 8px;
+    width: 68px;
+    height: 60px;
+  }
+  .stick-line {
+    height: 70px;
+    width: 5px;
+  }
+  .rising-stick {
+    width: 12px;
+    height: 120px;
+    bottom: 70px;
+  }
+  
+  /* Scroll layout optimizations */
+  .scroll-wrapper {
+    border-left-width: 6px;
+    border-right-width: 6px;
+    max-height: 380px;
+  }
+  .scroll-content {
+    padding: 20px 12px;
+  }
+  .scroll-que-title {
+    font-size: 1.25rem;
+  }
+  .scroll-que-subtitle {
+    font-size: 0.95rem;
+  }
+  .poem-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .instant-advice-box {
+    padding: 20px 12px;
+  }
+  .instant-verdict-text {
+    font-size: 1.6rem;
+  }
+  .instant-note-text {
+    font-size: 0.95rem;
+  }
+  .detail-table {
+    font-size: 0.8rem;
+  }
+  .detail-table td {
+    padding: 6px 4px;
+  }
+  .detail-table td:first-child {
+    width: 75px;
+  }
+  
+  /* Modal popup responsive fixes */
+  .modal-content {
+    width: 96%;
+    max-height: 85vh;
+  }
+  .modal-title {
+    font-size: 1.15rem;
+    padding: 15px 15px 8px 15px;
+  }
+  .modal-body-content {
+    padding: 12px;
+  }
+  .modal-detail-label {
+    font-size: 0.88rem;
+  }
+  .modal-detail-value {
+    font-size: 0.82rem;
+  }
+  
+  /* Sound floating button position */
+  .sound-control {
+    bottom: 15px;
+    right: 15px;
+  }
+  
+  /* Action buttons */
+  .action-buttons-flex {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
   }
   .action-buttons-flex .btn {
     min-width: 100%;
+    padding: 12px 10px;
   }
 }
