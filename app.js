@@ -321,8 +321,11 @@ const SHAKE_THRESHOLD = 18; // Sensible acceleration threshold
 function handleDeviceMotion(event) {
   if (currentStep !== 'shake' || shakeLock || shakeCount >= 11) return;
   
-  // Get acceleration with gravity (more widely supported on mobile devices)
-  let acc = event.acceleration || event.accelerationIncludingGravity;
+  // Verify that event.acceleration exists and has actual values, otherwise fallback to accelerationIncludingGravity
+  let acc = event.acceleration;
+  if (!acc || acc.x === null || acc.y === null || acc.z === null) {
+    acc = event.accelerationIncludingGravity;
+  }
   if (!acc) return;
   
   let x = acc.x || 0;
