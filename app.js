@@ -111,12 +111,21 @@ function toggleSound() {
   soundEnabled = !soundEnabled;
   const btn = document.getElementById('btn-sound');
   btn.querySelector('.icon-sound').textContent = soundEnabled ? '🔊' : '🔇';
+  
+  if (soundEnabled) {
+    startMeditationMusic();
+  } else {
+    stopMeditationMusic();
+  }
 }
 
 // Initialize Web Audio API
 function initAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (soundEnabled && !isMeditationPlaying) {
+    startMeditationMusic();
   }
 }
 
@@ -285,6 +294,7 @@ function tossKeo() {
 
 // Stage 1 -> Stage 2 transition
 function goToShake() {
+  currentStep = 'shake'; // Fix: Ensure state is updated so sensor triggers
   shakeCount = 0;
   shakeLock = false;
   shakeCountLabel.textContent = '0';
@@ -315,7 +325,7 @@ function goToShake() {
 // Device Shaking Detection variables
 let lastX = null, lastY = null, lastZ = null;
 let lastShakeTime = 0;
-const SHAKE_THRESHOLD = 18; // Sensible acceleration threshold
+const SHAKE_THRESHOLD = 12; // Fix: Lower threshold to 12 for high sensitivity on mobile devices
 
 // Handle Device Motion event (Shake Phone to Shake sticks)
 function handleDeviceMotion(event) {
@@ -451,6 +461,7 @@ function getInstantAdvice(queName) {
 // Stage 2 -> Stage 3: Reveal Fortune
 function revealFortune() {
   if (!selectedQue) return;
+  currentStep = 'result';
   
   // Fill common text inside scroll
   document.getElementById('scroll-que-name').textContent = selectedQue.name;
@@ -821,4 +832,127 @@ function showToast(message) {
       }
     }, 400);
   }, 3500);
+}
+
+// Zen Meditation Ambient Soundscape Synthesizer variables
+let meditationInterval = null;
+let droneOsc1 = null, droneOsc2 = null;
+let droneGain = null;
+let isMeditationPlaying = false;
+
+// Start continuous meditation ambient music
+function startMeditationMusic() {
+  if (!soundEnabled || isMeditationPlaying) return;
+  try {
+    initAudio();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    // Create main gain node for ambient music (soft and quiet in background)
+    droneGain = audioCtx.createGain();
+    droneGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    droneGain.connect(audioCtx.destination);
+
+    // 1. Deep harmonic drone (Root - A2 at 110Hz)
+    droneOsc1 = audioCtx.createOscillator();
+    droneOsc1.type = 'sine';
+    droneOsc1.frequency.setValueAtTime(110, audioCtx.currentTime);
+    
+    // Slow pitch modulation LFO (0.05Hz) to create a lively organic feel
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.05; 
+    lfoGain.gain.value = 0.4; // fluctuate frequency slightly
+    lfo.connect(lfoGain);
+    lfoGain.connect(droneOsc1.frequency);
+    
+    droneOsc1.connect(droneGain);
+    lfo.start();
+    droneOsc1.start();
+
+    // 2. Harmonic fifth (Harmonic interval - E3 at 165Hz)
+    droneOsc2 = audioCtx.createOscillator();
+    droneOsc2.type = 'sine';
+    droneOsc2.frequency.setValueAtTime(165, audioCtx.currentTime);
+    droneOsc2.connect(droneGain);
+    droneOsc2.start();
+
+    // 3. Periodic Singing Bowl strikes (every 18 seconds)
+    playSingingBowl();
+    meditationInterval = setInterval(playSingingBowl, 18000);
+
+    isMeditationPlaying = true;
+  } catch (e) {
+    console.error("Failed to start meditation soundscape:", e);
+  }
+}
+
+// Stop meditation ambient music and clean up audio resources
+function stopMeditationMusic() {
+  if (droneOsc1) {
+    try { droneOsc1.stop(); } catch(e){}
+    droneOsc1 = null;
+  }
+  if (droneOsc2) {
+    try { droneOsc2.stop(); } catch(e){}
+    droneOsc2 = null;
+  }
+  if (droneGain) {
+    try { droneGain.disconnect(); } catch(e){}
+    droneGain = null;
+  }
+  if (meditationInterval) {
+    clearInterval(meditationInterval);
+    meditationInterval = null;
+  }
+  isMeditationPlaying = false;
+}
+
+// Synthesize a beautiful, rich Tibetan Singing Bowl strike in real-time
+function playSingingBowl() {
+  if (!soundEnabled || !audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    
+    // Singing bowl partial frequencies (non-harmonic ratios creating a rich, metallic wood texture)
+    const freqs = [180, 272, 404, 563, 810];
+    const weights = [0.4, 0.3, 0.2, 0.1, 0.05];
+    
+    const bowlGain = audioCtx.createGain();
+    bowlGain.gain.setValueAtTime(0, now);
+    bowlGain.gain.linearRampToValueAtTime(0.06, now + 0.15); // slow attack strike
+    bowlGain.gain.exponentialRampToValueAtTime(0.001, now + 14.0); // extremely long warm decay
+    bowlGain.connect(audioCtx.destination);
+    
+    freqs.forEach((f, idx) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now);
+      
+      const oscGain = audioCtx.createGain();
+      oscGain.gain.value = weights[idx];
+      
+      // Add slow tremolo modulation to each partial for a vibrato singing effect
+      const tremolo = audioCtx.createOscillator();
+      const tremoloGain = audioCtx.createGain();
+      tremolo.type = 'sine';
+      tremolo.frequency.value = 2.0 + Math.random() * 1.5; 
+      tremoloGain.gain.value = 0.22;
+      tremolo.connect(tremoloGain);
+      tremoloGain.connect(oscGain.gain);
+      
+      osc.connect(oscGain);
+      oscGain.connect(bowlGain);
+      
+      tremolo.start(now);
+      osc.start(now);
+      
+      osc.stop(now + 15.0);
+      tremolo.stop(now + 15.0);
+    });
+  } catch (e) {
+    console.error("Failed to play singing bowl strike:", e);
+  }
 }
