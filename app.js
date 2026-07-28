@@ -37,6 +37,20 @@ const countdownLabel = document.getElementById('countdown');
 
 // Initialize App
 window.addEventListener('DOMContentLoaded', () => {
+  // Visitor counter logic (starting from 199)
+  let visits = localStorage.getItem('xin_xam_visits');
+  if (!visits) {
+    visits = 199;
+  } else {
+    visits = parseInt(visits, 10) + 1;
+  }
+  localStorage.setItem('xin_xam_visits', visits);
+  
+  const counterEl = document.getElementById('visit-counter');
+  if (counterEl) {
+    counterEl.textContent = visits.toLocaleString();
+  }
+
   if (!checkTimeLock()) {
     showSection('keo');
   }
