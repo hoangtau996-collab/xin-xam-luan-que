@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xin Xăm - Luận Quẻ Tâm Linh</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Ứng dụng xin xăm và luận giải quẻ xăm truyền thống. Trải nghiệm gieo keo âm dương, lắc ống xăm tương tác chân thực và lưu ảnh quẻ cát tường.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts for Thư Pháp (Traditional calligraphy vibe) -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Magical shimmering sparkles / fireflies -->
+  <div class="sparkles">
+    <span class="sparkle" style="left: 8%; animation-delay: 0s; animation-duration: 9s; width: 5px; height: 5px;"></span>
+    <span class="sparkle" style="left: 22%; animation-delay: 2.5s; animation-duration: 11s; width: 3px; height: 3px;"></span>
+    <span class="sparkle" style="left: 38%; animation-delay: 4.8s; animation-duration: 8.5s; width: 6px; height: 6px;"></span>
+    <span class="sparkle" style="left: 52%; animation-delay: 1.2s; animation-duration: 10s; width: 4px; height: 4px;"></span>
+    <span class="sparkle" style="left: 68%; animation-delay: 3.5s; animation-duration: 9.5s; width: 5px; height: 5px;"></span>
+    <span class="sparkle" style="left: 82%; animation-delay: 5.8s; animation-duration: 11.5s; width: 3px; height: 3px;"></span>
+    <span class="sparkle" style="left: 92%; animation-delay: 2.1s; animation-duration: 9s; width: 4px; height: 4px;"></span>
+  </div>
+  
+  <!-- Background Particles & Decorative Elements -->
+  <div class="bg-stars"></div>
+  <div class="bg-glow"></div>
+  <div class="smoke-effect"></div>
+  
+  <div class="container">
+    <!-- App Header -->
+    <header class="app-header">
+      <h1 class="logo-title">Xin Xăm Luận Quẻ</h1>
+      <p class="logo-subtitle">Chân Thành Sở Cầu - Tất Hữu Linh Ứng</p>
+    </header>
+
+    <!-- SECTION 1: XIN KEO ÂM DƯƠNG -->
+    <section id="sec-keo" class="card active">
+      <div class="card-body">
+        <div class="step-indicator">Bước 1: Xin Keo Âm Dương</div>
+        <h2 class="section-title">Gieo Keo Định Mệnh</h2>
+        
+        <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px;">
+          Trước khi gieo, xin hãy nhắm mắt tĩnh tâm, <strong>thành kính khấn nguyện lời khấn trong tâm</strong> (họ tên, tuổi, việc cần cầu hỏi). 
+          Sau đó chọn chế độ luận giải và nhấn nút <strong>Gieo Keo</strong> (Cần gieo được 1 Sấp - 1 Ngửa, tối đa 3 lần).
+        </p>
+
+        <!-- Dynamic Mode Selector inside Step 1 -->
+        <div class="form-group" style="margin-bottom: 25px;">
+          <label style="text-align: center; display: block; font-size: 1.05rem; margin-bottom: 10px; color: var(--lotus-pink-light);">Hình thức luận giải quẻ:</label>
+          <div class="mode-selector">
+            <label class="mode-option">
+              <input type="radio" name="interpret-mode" value="full" checked>
+              <div class="mode-card">
+                <span class="mode-icon">📜</span>
+                <span class="mode-title">Luận Giải Trọn Vẹn</span>
+                <span class="mode-desc">Thơ thần, dịch nghĩa và các khía cạnh cuộc sống.</span>
+              </div>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="interpret-mode" value="instant" id="radio-instant">
+              <div class="mode-card">
+                <span class="mode-icon">⚡</span>
+                <span class="mode-title">Lời Khuyên Tức Thì</span>
+                <span class="mode-desc">Loại quẻ tốt/xấu kèm lời chỉ dẫn ngắn gọn.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Block Countdown Timer -->
+        <div id="block-timer-container" class="alert alert-danger hidden">
+          <p class="alert-title">Chưa Thể Xin Quẻ</p>
+          <p>Bạn đã gieo keo bất thành cả 3 lần. Xin hãy thành tâm đợi thời cơ khác.</p>
+          <div id="countdown" class="timer-countdown">30:00</div>
+          <p class="timer-sub">Quay lại sau 30 phút để khấn nguyện lại.</p>
+        </div>
+
+        <div id="keo-playground" class="keo-playground">
+          <!-- Coins / Wood Blocks container -->
+          <div class="keo-container">
+            <div id="keo-1" class="keo-block">
+              <div class="keo-inner">
+                <div class="keo-face keo-ngua"><span>Ngửa (Dương)</span></div>
+                <div class="keo-face keo-sap"><span>Sấp (Âm)</span></div>
+              </div>
+            </div>
+            <div id="keo-2" class="keo-block">
+              <div class="keo-inner">
+                <div class="keo-face keo-ngua"><span>Ngửa (Dương)</span></div>
+                <div class="keo-face keo-sap"><span>Sấp (Âm)</span></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Wooden Plate Shadow for realistic feel -->
+          <div class="wooden-plate"></div>
+        </div>
+
+        <!-- Toss Status Message -->
+        <div id="keo-result-msg" class="result-msg">Hãy nhấn "Gieo Keo" bên dưới.</div>
+
+        <!-- Attempt tracker -->
+        <div class="attempts-container">
+          <div class="attempt-slot" data-slot="1"></div>
+          <div class="attempt-slot" data-slot="2"></div>
+          <div class="attempt-slot" data-slot="3"></div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="action-buttons">
+          <button id="btn-toss" class="btn btn-gold ripple" onclick="tossKeo()">
+            <span>Gieo Keo Âm Dương</span>
+            <div class="btn-shine"></div>
+          </button>
+          <button id="btn-next-step" class="btn btn-green ripple hidden" onclick="goToShake()">
+            <span>Tiến Tới Lắc Xăm</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: LẮC ỐNG XĂM -->
+    <section id="sec-shake" class="card">
+      <div class="card-body">
+        <div class="step-indicator">Bước 2: Lắc Ống Xăm</div>
+        <h2 class="section-title">Thành Tâm Lắc Ống Xăm</h2>
+        <p class="step-desc">
+          Nhấp chuột hoặc chạm liên tục vào ống xăm **trên 10 lần** để năng lượng tâm linh tích tụ và thẻ xăm xuất hiện.
+        </p>
+
+        <!-- Shake Meter / Progress -->
+        <div class="shake-meter-container">
+          <div class="shake-meter-label">Thành tâm lắc: <span id="shake-count">0</span> / 11 lần</div>
+          <div class="shake-progress-bar">
+            <div id="shake-progress" class="shake-progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Interactive Bamboo Tube Container -->
+        <div id="tube-container" class="tube-container" onclick="handleShakeTap()">
+          <!-- Bamboo Tube Image/SVG elements representing sticks inside -->
+          <div class="bamboo-tube">
+            <div class="sticks-inside">
+              <span class="stick-line stick-1"></span>
+              <span class="stick-line stick-2"></span>
+              <span class="stick-line stick-3"></span>
+              <span class="stick-line stick-4"></span>
+              <span class="stick-line stick-5"></span>
+              <span class="stick-line stick-6"></span>
+              <span class="stick-line stick-7"></span>
+              <span class="stick-line stick-8"></span>
+              <span class="stick-line stick-9"></span>
+              <span class="stick-line stick-10"></span>
+            </div>
+            <!-- The tube body itself -->
+            <div class="tube-body">
+              <div class="tube-texture"></div>
+              <div class="tube-label">Xăm Linh Quẻ</div>
+            </div>
+          </div>
+          
+          <!-- Floating/rising stick that falls out -->
+          <div id="rising-stick" class="rising-stick hidden">
+            <div class="stick-wood">
+              <span id="rising-stick-num">--</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="shake-instruction" class="shake-instruction-pulse">Nhấp/Chạm vào ống xăm để bắt đầu lắc!</div>
+
+        <!-- Action Button (Hidden until stick falls out) -->
+        <div class="action-buttons">
+          <button id="btn-reveal" class="btn btn-gold ripple hidden" onclick="revealFortune()">
+            <span>Xem Luận Giải Chi Tiết</span>
+            <div class="btn-shine"></div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: LUẬN GIẢI QUẺ XĂM & LƯU ẢNH -->
+    <section id="sec-result" class="card">
+      <div class="card-body">
+        <div class="step-indicator">Bước 3: Nhận Luận Giải</div>
+        <h2 class="section-title">Thẻ Xăm Của Bạn</h2>
+
+        <!-- The beautiful scroll layout -->
+        <div class="scroll-wrapper">
+          <div class="scroll-header"></div>
+          <div class="scroll-content">
+            <div class="scroll-scrollable-inner">
+              <h3 id="scroll-que-name" class="scroll-que-title">Quẻ Số --</h3>
+              <h4 id="scroll-que-subtitle" class="scroll-que-subtitle">--</h4>
+              
+              <div class="divider-gold"></div>
+              
+              <div class="prayer-info">
+                Ý nguyện: <strong id="scroll-user-wish">Cầu bình an...</strong>
+              </div>
+
+              <!-- LỜI KHUYÊN TỨC THÌ (Instant Mode) -->
+              <div id="scroll-instant-sec" class="scroll-section hidden" style="width: 100%;">
+                <h5>Lời Khuyên Tức Thì</h5>
+                <div class="instant-advice-box">
+                  <div id="instant-verdict" class="instant-verdict-text">--</div>
+                  <p id="instant-note" class="instant-note-text">--</p>
+                </div>
+              </div>
+
+              <!-- LUẬN GIẢI TRỌN VẸN (Full Mode) -->
+              <div id="scroll-full-sections" style="width: 100%;">
+                <div class="scroll-section">
+                  <h5>Thơ Thần (Chữ Hán Việt)</h5>
+                  <p id="scroll-poem" class="poem-text">--</p>
+                </div>
+
+                <div class="scroll-section">
+                  <h5>Dịch Nghĩa</h5>
+                  <p id="scroll-translation" class="poem-text text-italic">--</p>
+                </div>
+
+                <div class="scroll-section">
+                  <h5>Ý Nghĩa Chung</h5>
+                  <p id="scroll-meaning">--</p>
+                </div>
+
+                <div class="divider-gold"></div>
+                
+                <div class="scroll-section">
+                  <h5>Luận Giải Chi Tiết</h5>
+                  <table class="detail-table">
+                    <tbody id="scroll-details-tbody">
+                      <!-- Dynamic details rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Decorative Stamped Seal -->
+              <div class="seal-container">
+                <div class="seal">
+                  <span>Linh Quẻ</span>
+                  <span>Cát Tường</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-footer"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons-flex">
+          <button id="btn-show-details" class="btn btn-green ripple" onclick="openDetailsModal()">
+            <span>Xem Bảng Luận Giải</span>
+          </button>
+          <button class="btn btn-gold ripple" onclick="saveAsImage()">
+            <span>Lưu Ảnh Quẻ Xăm</span>
+            <div class="btn-shine"></div>
+          </button>
+          <button class="btn btn-red ripple" onclick="resetApp()">
+            <span>Gieo Quẻ Mới</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- MODAL: Luận giải chi tiết phóng to -->
+  <div id="details-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeDetailsModal()">&times;</span>
+      <h3 class="modal-title">Bản Luận Giải Chi Tiết</h3>
+      <div id="modal-details-content" class="modal-body-content">
+        <!-- Render detail fields here nicely -->
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN CANVAS FOR IMAGE GENERATION -->
+  <canvas id="export-canvas" width="800" height="1200" style="display:none;"></canvas>
+
+  <!-- Sound Toggle Button -->
+  <div class="sound-control" onclick="toggleSound()">
+    <button id="btn-sound" class="btn-round" title="Bật/Tắt âm thanh">
+      <span class="icon-sound">🔊</span>
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="que_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
