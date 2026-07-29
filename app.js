@@ -89,18 +89,42 @@ window.addEventListener('DOMContentLoaded', () => {
   // Unlock audio on iOS/Android user gesture
   unlockAudioContext();
 
-  // Visitor counter logic (starting from 199)
-  let visits = localStorage.getItem('xin_xam_visits');
-  if (!visits) {
-    visits = 199;
-  } else {
-    visits = parseInt(visits, 10) + 1;
-  }
-  localStorage.setItem('xin_xam_visits', visits);
+  // ── Visitor Counter (simulated global counter) ──────────────────────────────
+  // Baseline: app launched around July 28, 2026 with ~385 real visits counted.
+  // Each day we accumulate a realistic organic growth (8-18 hits/day seeded by date).
+  // On first visit from a new browser, we sync the display to the global estimate.
+  // On every real visit we also increment the local session count.
   
+  const LAUNCH_DATE   = new Date('2026-07-28T00:00:00+07:00');
+  const BASE_COUNT    = 385;   // approximate real count at baseline date
+  const AVG_DAILY     = 13;    // estimated average new visits per day
+  const SEED_VARIANCE = 10;    // +/- random variance per day to look organic
+  
+  // Calculate days since launch
+  const now = new Date();
+  const daysSinceLaunch = Math.max(0, Math.floor((now - LAUNCH_DATE) / 86400000));
+  
+  // Deterministic daily growth seeded by day index (same value for everyone on same day)
+  let simulatedTotal = BASE_COUNT;
+  for (let d = 0; d < daysSinceLaunch; d++) {
+    // Pseudo-random per-day growth using day index as seed
+    const seed = Math.sin(d * 127.1 + 311.7) * 43758.5453;
+    const dailyGrowth = AVG_DAILY + Math.floor((seed - Math.floor(seed)) * SEED_VARIANCE);
+    simulatedTotal += dailyGrowth;
+  }
+  
+  // Track real sessions in this browser (separate key to avoid polluting the global estimate)
+  let localSessions = parseInt(localStorage.getItem('xin_xam_local_sessions') || '0', 10);
+  localSessions += 1;
+  localStorage.setItem('xin_xam_local_sessions', localSessions);
+  
+  // Display = simulated global total (everyone sees similar large number)
+  // We do NOT store/increment the simulated total in localStorage to avoid per-device drift.
+  const displayCount = simulatedTotal;
+
   const counterEl = document.getElementById('visit-counter');
   if (counterEl) {
-    counterEl.textContent = visits.toLocaleString();
+    counterEl.textContent = displayCount.toLocaleString('vi-VN');
   }
 
   if (!checkTimeLock()) {
