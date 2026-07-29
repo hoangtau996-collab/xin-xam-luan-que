@@ -1,5 +1,6 @@
 // State Management
 let currentStep = 'keo'; // keo, shake, result
+let activeTab = 'fortune'; // fortune, meditation
 let interpretMode = 'full'; // full, instant
 let userWish = 'Thành tâm khấn nguyện';
 let attemptsCount = 0;
@@ -8,6 +9,14 @@ let shakeCount = 0;
 let selectedQue = null;
 let shakeLock = false;
 let tossLock = false;
+
+// Meditation Section State
+let incenseDuration = 120; // Default 120s (2 minutes)
+let incenseTimeLeft = 120;
+let isIncenseBurning = false;
+let incenseInterval = null;
+let isFlowerOffered = false;
+let moCount = 0;
 
 // Audio Context & Variables
 let audioCtx = null;
@@ -34,6 +43,22 @@ const btnReveal = document.getElementById('btn-reveal');
 
 const blockTimerContainer = document.getElementById('block-timer-container');
 const countdownLabel = document.getElementById('countdown');
+
+// DOM Elements for Meditation Section
+const fortuneAppView = document.getElementById('fortune-app-view');
+const meditationAppView = document.getElementById('meditation-app-view');
+const btnTabFortune = document.getElementById('tab-fortune');
+const btnTabMeditation = document.getElementById('tab-meditation');
+
+const altarFlowerLeft = document.getElementById('altar-flower-left');
+const altarFlowerRight = document.getElementById('altar-flower-right');
+const incenseSmoke = document.getElementById('incense-smoke');
+const incenseStick = document.getElementById('incense-stick');
+const incenseTip = document.getElementById('incense-tip');
+const incenseTimerDisplay = document.getElementById('incense-timer-display');
+const btnToggleIncense = document.getElementById('btn-toggle-incense');
+const btnToggleFlowers = document.getElementById('btn-toggle-flowers');
+const moCounter = document.getElementById('mo-counter');
 
 // Initialize App
 window.addEventListener('DOMContentLoaded', () => {
@@ -968,5 +993,218 @@ function playSingingBowl() {
     });
   } catch (e) {
     console.error("Failed to play singing bowl strike:", e);
+  }
+}
+
+// ==========================================
+// AUXILIARY FEATURE: TỊNH TÂM GÕ MÕ
+// ==========================================
+
+// Switch between navigation tabs (Xin Xăm vs Tịnh Tâm)
+function switchTab(tabId) {
+  if (activeTab === tabId) return;
+  
+  if (tabId === 'fortune') {
+    btnTabFortune.classList.add('active');
+    btnTabMeditation.classList.remove('active');
+    fortuneAppView.classList.remove('hidden');
+    meditationAppView.classList.add('hidden');
+    activeTab = 'fortune';
+  } else {
+    btnTabFortune.classList.remove('active');
+    btnTabMeditation.classList.add('active');
+    fortuneAppView.classList.add('hidden');
+    meditationAppView.classList.remove('hidden');
+    activeTab = 'meditation';
+    
+    // Auto start ambient background music on enter if enabled
+    if (soundEnabled && !isMeditationPlaying) {
+      startMeditationMusic();
+    }
+  }
+}
+
+// Set duration of incense stick burning
+function setIncenseDuration(seconds) {
+  if (isIncenseBurning) return;
+  
+  incenseDuration = seconds;
+  incenseTimeLeft = seconds;
+  
+  updateIncenseTimerDisplay();
+  
+  // Toggle preset button classes
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`preset-${seconds}`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+}
+
+// Format and update incense countdown display (MM:SS)
+function updateIncenseTimerDisplay() {
+  const mins = Math.floor(incenseTimeLeft / 60);
+  const secs = incenseTimeLeft % 60;
+  incenseTimerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Toggle thắp hương (start/stop)
+function toggleIncense() {
+  if (!isIncenseBurning) {
+    // User interaction gesture to resume audio context
+    initAudio();
+    if (soundEnabled && !isMeditationPlaying) {
+      startMeditationMusic();
+    }
+    
+    isIncenseBurning = true;
+    btnToggleIncense.classList.add('btn-red');
+    btnToggleIncense.classList.remove('btn-green');
+    btnToggleIncense.querySelector('span').textContent = 'Dập Hương Nhang';
+    
+    // Sound cue for ignition
+    playWoodClack(0, 1.8, 0.4);
+    
+    // Light tip and smoke
+    incenseTip.classList.add('lit');
+    incenseSmoke.classList.add('lit');
+    
+    // Set stick starting height to full
+    incenseStick.style.height = '100%';
+    
+    // Start countdown interval
+    incenseInterval = setInterval(() => {
+      incenseTimeLeft--;
+      updateIncenseTimerDisplay();
+      
+      // Melt stick down proportionally
+      const ratio = (incenseTimeLeft / incenseDuration) * 100;
+      incenseStick.style.height = `${ratio}%`;
+      
+      if (incenseTimeLeft <= 0) {
+        extinguishIncense(true); // Burn finished
+      }
+    }, 1000);
+  } else {
+    extinguishIncense(false); // Extinguished manually
+  }
+}
+
+// Extinguish incense stick and clean timers
+function extinguishIncense(completed = false) {
+  isIncenseBurning = false;
+  if (incenseInterval) {
+    clearInterval(incenseInterval);
+    incenseInterval = null;
+  }
+  
+  btnToggleIncense.classList.remove('btn-red');
+  btnToggleIncense.classList.add('btn-green');
+  btnToggleIncense.querySelector('span').textContent = 'Thắp Hương Nhang';
+  
+  incenseTip.classList.remove('lit');
+  incenseSmoke.classList.remove('lit');
+  
+  incenseStick.style.height = '0%';
+  incenseTimeLeft = incenseDuration;
+  updateIncenseTimerDisplay();
+  
+  if (completed) {
+    playSingingBowl(); // Strike singing bowl
+    showToast("Nén hương đã tàn. Tịnh tâm viên mãn!");
+  } else {
+    showToast("Đã dập tắt nén hương.");
+  }
+}
+
+// Toggle dâng hoa sen (show/hide vases)
+function toggleFlowerOffering() {
+  isFlowerOffered = !isFlowerOffered;
+  
+  if (isFlowerOffered) {
+    altarFlowerLeft.classList.add('show');
+    altarFlowerRight.classList.add('show');
+    btnToggleFlowers.querySelector('span').textContent = 'Thu Hoa Sen Về';
+    
+    // Synthesized gentle bell ring
+    playWoodClack(0, 2.2, 0.45);
+    showToast("Đã dâng hoa sen thanh khiết lên ban thờ!");
+  } else {
+    altarFlowerLeft.classList.remove('show');
+    altarFlowerRight.classList.remove('show');
+    btnToggleFlowers.querySelector('span').textContent = 'Dâng Hoa Sen Vàng';
+    showToast("Đã thu hồi hoa sen.");
+  }
+}
+
+// Handle gõ mõ click with floating text at cursor position
+function handleMoClick(e) {
+  initAudio();
+  if (soundEnabled && !isMeditationPlaying) {
+    startMeditationMusic();
+  }
+  
+  moCount++;
+  moCounter.textContent = moCount.toString();
+  
+  playMoSound();
+  
+  // Create +1 Cong Duc floating text at click coordinate
+  const container = e.currentTarget;
+  const rect = container.getBoundingClientRect();
+  
+  let clickX = rect.width / 2;
+  let clickY = rect.height / 2;
+  
+  if (e.clientX && e.clientY) {
+    clickX = e.clientX - rect.left;
+    clickY = e.clientY - rect.top;
+  }
+  
+  const meritEl = document.createElement('div');
+  meritEl.className = 'floating-merit';
+  meritEl.textContent = '+1 Công Đức';
+  meritEl.style.left = `${clickX - 35}px`;
+  meritEl.style.top = `${clickY - 20}px`;
+  
+  container.appendChild(meritEl);
+  
+  // Auto remove floating text after animation finish
+  setTimeout(() => {
+    if (container.contains(meritEl)) {
+      container.removeChild(meritEl);
+    }
+  }, 1100);
+}
+
+// Synthesize a realistic hollow woodblock sound for the Mõ (wooden fish)
+function playMoSound() {
+  if (!soundEnabled) return;
+  try {
+    initAudio();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    
+    // Mõ (wooden fish) acoustic signature
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.12);
+    
+    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.15);
+  } catch (e) {
+    console.error("Failed to play Mõ sound:", e);
   }
 }

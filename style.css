@@ -1432,3 +1432,365 @@ input[type="text"]:focus, textarea:focus {
   font-size: 0.95rem;
   letter-spacing: 0.5px;
 }
+
+/* APP NAVIGATION TABS */
+.app-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  width: 100%;
+  max-width: 480px;
+  z-index: 10;
+  padding: 0 10px;
+}
+
+.nav-tab {
+  flex: 1;
+  background: rgba(22, 63, 43, 0.45);
+  border: 1.5px solid rgba(255, 141, 161, 0.15);
+  color: var(--text-muted);
+  padding: 11px 8px;
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.nav-tab:hover {
+  border-color: rgba(255, 141, 161, 0.4);
+  color: var(--text-light);
+  background: rgba(22, 63, 43, 0.6);
+}
+
+.nav-tab.active {
+  background: linear-gradient(135deg, rgba(22, 63, 43, 0.9), rgba(16, 50, 33, 0.95));
+  border-color: var(--lotus-pink-light);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 141, 161, 0.3), inset 0 0 8px rgba(255, 141, 161, 0.1);
+  transform: translateY(-2px);
+}
+
+/* MEDITATION ROOM & ALTAR */
+.altar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
+  background: rgba(14, 38, 26, 0.4);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.altar-view {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(to bottom, rgba(15, 45, 30, 0.9), rgba(9, 28, 19, 0.95));
+  border: 1.5px solid rgba(255, 141, 161, 0.15);
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding-bottom: 25px;
+  box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+
+/* Altar slots */
+.altar-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 110px;
+  height: 100%;
+  position: relative;
+  z-index: 5;
+}
+
+.lotus-offering {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--lotus-pink);
+  box-shadow: 0 0 15px rgba(255, 141, 161, 0.35);
+  opacity: 0;
+  transform: scale(0.7) translateY(15px);
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+
+.lotus-offering.show {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.offering-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Center incense burner */
+.incense-burner-wrapper {
+  position: relative;
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  z-index: 6;
+}
+
+.burner-image {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #b8860b;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  z-index: 8;
+  background-color: #000;
+  pointer-events: none;
+}
+
+.incense-stick-holder {
+  position: absolute;
+  bottom: 50px;
+  width: 6px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 7;
+}
+
+.incense-stick {
+  width: 2.5px;
+  height: 0%; /* Dynamic height */
+  background: linear-gradient(to top, #704214, #d2b48c);
+  border-radius: 1px;
+  position: relative;
+  transition: height 1s linear;
+}
+
+.incense-tip {
+  position: absolute;
+  top: -2px;
+  left: -1px;
+  width: 4.5px;
+  height: 4.5px;
+  background-color: #ff4500;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ff4500, 0 0 12px #ff8c00;
+  animation: glow-pulse 1.5s infinite alternate;
+  display: none;
+}
+
+.incense-tip.lit {
+  display: block;
+}
+
+@keyframes glow-pulse {
+  0% { transform: scale(0.9); filter: brightness(1); }
+  100% { transform: scale(1.25); filter: brightness(1.6); }
+}
+
+/* Incense smoke container */
+.smoke-container {
+  position: absolute;
+  top: 15px; /* positioned above the stick holder */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 9;
+  display: none;
+}
+
+.smoke-container.lit {
+  display: block;
+}
+
+.smoke-particle {
+  position: absolute;
+  width: 3.5px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  filter: blur(1.8px);
+  border-radius: 50%;
+  animation: drift-smoke 4s infinite linear;
+}
+
+.smoke-p1 { left: 8px; animation-delay: 0s; }
+.smoke-p2 { left: 18px; animation-delay: 1.3s; animation-duration: 4.5s; }
+.smoke-p3 { left: 28px; animation-delay: 2.7s; animation-duration: 3.8s; }
+
+@keyframes drift-smoke {
+  0% { transform: translateY(35px) scale(0.6) translateX(0); opacity: 0; }
+  20% { opacity: 0.55; }
+  60% { transform: translateY(0px) scale(1.4) translateX(12px); opacity: 0.25; }
+  100% { transform: translateY(-35px) scale(2.2) translateX(-6px); opacity: 0; }
+}
+
+/* INCENSE CONTROLS & TIMERS */
+.incense-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  background: rgba(22, 63, 43, 0.3);
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 141, 161, 0.08);
+}
+
+.timer-display {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  color: var(--lotus-pink-light);
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 141, 161, 0.35);
+  line-height: 1.1;
+}
+
+.time-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.preset-btn {
+  background: rgba(14, 38, 26, 0.7);
+  border: 1px solid rgba(255, 141, 161, 0.2);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.preset-btn:hover {
+  border-color: rgba(255, 141, 161, 0.4);
+  color: var(--text-light);
+}
+
+.preset-btn.active {
+  background: var(--lotus-pink);
+  border-color: var(--lotus-pink-light);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(255, 141, 161, 0.35);
+}
+
+/* MO GO SECTION */
+.mo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.mo-container {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  user-select: none;
+  -webkit-user-select: none;
+  display: inline-block;
+  margin-top: 5px;
+}
+
+.mo-container:active {
+  transform: scale(0.86);
+}
+
+.mo-image {
+  width: 95px;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 1.8px solid var(--lotus-pink-light);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4), 0 0 10px rgba(255, 141, 161, 0.1);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.mo-container:hover .mo-image {
+  border-color: var(--lotus-pink);
+  box-shadow: 0 5px 18px rgba(255, 141, 161, 0.2);
+}
+
+/* Floating merit text (+1 Cong Duc) */
+.floating-merit {
+  position: absolute;
+  color: #ffd700;
+  font-size: 1.05rem;
+  font-weight: bold;
+  font-family: var(--font-serif);
+  pointer-events: none;
+  animation: float-up-fade 1.1s forwards cubic-bezier(0.215, 0.61, 0.355, 1);
+  z-index: 100;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 5px rgba(255, 215, 0, 0.3);
+  white-space: nowrap;
+}
+
+@keyframes float-up-fade {
+  0% { transform: translateY(0) scale(0.85); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-65px) scale(1.15); opacity: 0; }
+}
+
+/* Tablet & Mobile responsive fixes for meditation view */
+@media (max-width: 480px) {
+  .altar-view {
+    height: 200px;
+    padding-bottom: 15px;
+  }
+  .altar-slot {
+    width: 90px;
+  }
+  .lotus-offering {
+    width: 65px;
+    height: 65px;
+  }
+  .burner-image {
+    width: 65px;
+    height: 65px;
+  }
+  .incense-stick-holder {
+    height: 80px;
+    bottom: 42px;
+  }
+  .timer-display {
+    font-size: 2.1rem;
+  }
+  .mo-image {
+    width: 85px;
+    height: 85px;
+  }
+}

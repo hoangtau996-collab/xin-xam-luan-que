@@ -58,8 +58,20 @@
       <p class="logo-subtitle">Chân Thành Sở Cầu - Tất Hữu Linh Ứng</p>
     </header>
 
-    <!-- SECTION 1: XIN KEO ÂM DƯƠNG -->
-    <section id="sec-keo" class="card active">
+    <!-- App Navigation Tabs -->
+    <nav class="app-navigation">
+      <button id="tab-fortune" class="nav-tab active" onclick="switchTab('fortune')">
+        <span>⛩️ Xin Xăm Gieo Quẻ</span>
+      </button>
+      <button id="tab-meditation" class="nav-tab" onclick="switchTab('meditation')">
+        <span>🌸 Tịnh Tâm Gõ Mõ</span>
+      </button>
+    </nav>
+
+    <!-- Fortune Teller View -->
+    <div id="fortune-app-view">
+      <!-- SECTION 1: XIN KEO ÂM DƯƠNG -->
+      <section id="sec-keo" class="card active">
       <div class="card-body">
         <div class="step-indicator">Bước 1: Xin Keo Âm Dương</div>
         <h2 class="section-title">Gieo Keo Định Mệnh</h2>
@@ -292,7 +304,95 @@
         </div>
       </div>
     </section>
-    
+    </div> <!-- /fortune-app-view -->
+
+    <!-- Meditation / Tịnh Tâm View (Hidden by default) -->
+    <div id="meditation-app-view" class="hidden">
+      <section class="card">
+        <div class="card-body">
+          <div class="step-indicator">Không gian tịnh tâm</div>
+          <h2 class="section-title">Thắp Hương Gõ Mõ</h2>
+          <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px; text-align: center;">
+            Thắp một nén nhang, dâng hoa tươi lên ban thờ và gõ mõ tụng kinh giúp tâm hồn thanh tịnh, tập trung và tích lũy công đức cát lành.
+          </p>
+          
+          <!-- Serene Altar Container -->
+          <div class="altar-container">
+            <!-- Altar slots for flower offering and incense -->
+            <div class="altar-view">
+              <!-- Left flower vase -->
+              <div class="altar-slot">
+                <img id="altar-flower-left" src="altar_lotus.jpg" class="lotus-offering" alt="Hoa Sen Dâng Phật">
+                <div class="offering-label">Dâng Hoa</div>
+              </div>
+              
+              <!-- Center incense burner -->
+              <div class="incense-burner-wrapper">
+                <!-- Smoke animation -->
+                <div id="incense-smoke" class="smoke-container">
+                  <div class="smoke-particle smoke-p1"></div>
+                  <div class="smoke-particle smoke-p2"></div>
+                  <div class="smoke-particle smoke-p3"></div>
+                </div>
+                
+                <!-- Incense stick -->
+                <div class="incense-stick-holder">
+                  <div id="incense-stick" class="incense-stick" style="height: 0%;">
+                    <div id="incense-tip" class="incense-tip"></div>
+                  </div>
+                </div>
+                
+                <!-- Burner Image -->
+                <img src="altar_incense.jpg" class="burner-image" alt="Lư Hương Cổ">
+              </div>
+              
+              <!-- Right flower vase -->
+              <div class="altar-slot">
+                <img id="altar-flower-right" src="altar_lotus.jpg" class="lotus-offering" alt="Hoa Sen Dâng Phật">
+                <div class="offering-label">Dâng Hoa</div>
+              </div>
+            </div>
+            
+            <!-- Controls section -->
+            <div class="incense-controls">
+              <div class="timer-display" id="incense-timer-display">02:00</div>
+              
+              <div class="time-presets">
+                <button id="preset-120" class="preset-btn active" onclick="setIncenseDuration(120)">2 Phút</button>
+                <button id="preset-300" class="preset-btn" onclick="setIncenseDuration(300)">5 Phút</button>
+                <button id="preset-600" class="preset-btn" onclick="setIncenseDuration(600)">10 Phút</button>
+                <button id="preset-900" class="preset-btn" onclick="setIncenseDuration(900)">15 Phút</button>
+              </div>
+              
+              <div class="action-buttons-flex" style="margin-top: 15px; width: 100%; max-width: 420px;">
+                <button id="btn-toggle-incense" class="btn btn-green ripple" onclick="toggleIncense()">
+                  <span>Thắp Hương Nhang</span>
+                </button>
+                <button id="btn-toggle-flowers" class="btn btn-gold ripple" onclick="toggleFlowerOffering()">
+                  <span>Dâng Hoa Sen Vàng</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Mõ Gỗ Section -->
+            <div class="mo-section">
+              <h3 style="font-family: var(--font-serif); color: var(--lotus-pink-light); text-align: center; margin-top: 20px; font-size: 1.35rem; letter-spacing: 0.5px;">Gõ Mõ Tích Đức</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 12px;">(Nhấp trực tiếp vào mõ gỗ bên dưới để tụng kinh)</p>
+              
+              <div class="mo-container" onclick="handleMoClick(event)">
+                <img src="altar_mo.jpg" class="mo-image" alt="Mõ Gỗ">
+              </div>
+              
+              <div style="font-family: var(--font-serif); font-size: 1.15rem; color: #fff; margin-top: 15px; text-align: center; letter-spacing: 0.5px;">
+                Công Đức Tích Lũy: <span id="mo-counter" style="color: var(--lotus-pink-light); font-weight: bold; font-size: 1.3rem;">0</span>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+    </div>
+
     <!-- App Footer with visitor counter -->
     <footer class="app-footer" style="margin-top: 35px; margin-bottom: 10px; text-align: center; font-size: 0.85rem; color: var(--text-muted); opacity: 0.8;">
       <p>© 2026 Xăm Linh Quẻ Thánh Mẫu - Vạn sự tùy duyên</p>
