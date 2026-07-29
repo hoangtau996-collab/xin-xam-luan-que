@@ -31,11 +31,6 @@
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-dark);
-  background-image: linear-gradient(rgba(4, 15, 10, 0.45), rgba(4, 15, 10, 0.45)), url('bg_lotus.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   color: var(--text-light);
   min-height: 100vh;
   display: flex;
@@ -43,6 +38,22 @@ body {
   align-items: center;
   overflow-x: hidden;
   position: relative;
+}
+
+/* Fix iOS/iPad Safari background-attachment: fixed zoom & scale bug */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(4, 15, 10, 0.45), rgba(4, 15, 10, 0.45)), url('bg_lotus.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -10;
+  pointer-events: none;
 }
 
 /* Magical shimmering floating lights / sparkles */
