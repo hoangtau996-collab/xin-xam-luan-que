@@ -1484,22 +1484,22 @@ input[type="text"]:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px;
+  gap: 16px;
   width: 100%;
   background: rgba(14, 38, 26, 0.4);
   border-radius: 20px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .altar-view {
   position: relative;
   width: 100%;
-  height: 380px; /* Taller height to showcase the stunning altar table */
-  background: url('altar_table.jpg') no-repeat center;
+  height: clamp(220px, 45vw, 380px); /* Responsive height based on viewport */
+  background: url('altar_table.jpg') no-repeat center 30%;
   background-size: cover;
   border: 1.5px solid rgba(255, 141, 161, 0.15);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: inset 0 0 35px rgba(0,0,0,0.6);
   overflow: hidden;
 }
@@ -1510,32 +1510,32 @@ input[type="text"]:focus, textarea:focus {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  width: 90px;
-  height: 110px;
+  width: 80px;
+  height: 100px;
   position: absolute;
-  bottom: 135px; /* tabletop level */
+  bottom: 35%; /* tabletop level relative to altar-view height */
   z-index: 10;
 }
 
 #altar-flower-left {
-  left: 16%;
+  left: 10%;
 }
 
 #altar-flower-right {
-  right: 16%;
+  right: 10%;
 }
 
 .altar-view .altar-slot:nth-child(1) {
-  left: 16%;
+  left: 10%;
 }
 
 .altar-view .altar-slot:nth-child(3) {
-  right: 16%;
+  right: 10%;
 }
 
 .lotus-offering {
-  width: 70px;
-  height: 70px;
+  width: clamp(52px, 12vw, 70px);
+  height: clamp(52px, 12vw, 70px);
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid var(--lotus-pink);
@@ -1552,33 +1552,33 @@ input[type="text"]:focus, textarea:focus {
 }
 
 .offering-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
-  margin-top: 6px;
+  margin-top: 5px;
   font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: 0.5px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* Center incense burner - positioned absolutely on the wooden tabletop */
+/* Center incense burner - positioned absolutely on the wooden tabletop using % */
 .incense-burner-wrapper {
   position: absolute;
-  bottom: 135px; /* aligned exactly on the new wooden tabletop */
+  bottom: 35%; /* relative to .altar-view height — matches .altar-slot */
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
+  width: clamp(60px, 14vw, 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: 70px;
+  height: clamp(55px, 12vw, 70px);
   z-index: 12;
 }
 
 .burner-image {
-  width: 60px;
-  height: 60px;
+  width: clamp(48px, 11vw, 60px);
+  height: clamp(48px, 11vw, 60px);
   object-fit: cover;
   border-radius: 50%;
   border: 1.8px solid #b8860b;
@@ -1634,14 +1634,14 @@ input[type="text"]:focus, textarea:focus {
   100% { transform: scale(1.25); filter: brightness(1.6); }
 }
 
-/* Incense smoke container - positioned relatively above the burner wrapper */
+/* Incense smoke container - positioned above the incense burner wrapper using % */
 .smoke-container {
   position: absolute;
-  bottom: 105px; /* positioned floating exactly above the burning stick tip */
+  bottom: calc(35% + 55px); /* above the burner wrapper's bottom */
   left: 50%;
   transform: translateX(-50%);
-  width: 40px;
-  height: 90px;
+  width: 36px;
+  height: 80px;
   pointer-events: none;
   z-index: 13;
   display: none;
@@ -1681,17 +1681,17 @@ input[type="text"]:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   width: 100%;
   background: rgba(22, 63, 43, 0.3);
-  padding: 18px;
+  padding: 14px 16px;
   border-radius: 16px;
   border: 1px solid rgba(255, 141, 161, 0.08);
 }
 
 .timer-display {
   font-family: var(--font-serif);
-  font-size: 2.5rem;
+  font-size: clamp(1.9rem, 7vw, 2.5rem);
   color: var(--lotus-pink-light);
   font-weight: bold;
   letter-spacing: 2px;
@@ -1785,9 +1785,9 @@ input[type="text"]:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding-top: 10px;
+  padding-top: 6px;
 }
 
 .mo-container {
@@ -1797,27 +1797,30 @@ input[type="text"]:focus, textarea:focus {
   user-select: none;
   -webkit-user-select: none;
   display: inline-block;
-  margin-top: 5px;
+  margin-top: 4px;
+  /* Larger tap area for mobile */
+  padding: 8px;
 }
 
 .mo-container:active {
-  transform: scale(0.86);
+  transform: scale(0.84);
 }
 
 .mo-image {
-  width: 95px;
-  height: 95px;
+  width: clamp(90px, 22vw, 120px);
+  height: clamp(90px, 22vw, 120px);
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 22px;
   border: 1.8px solid var(--lotus-pink-light);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.4), 0 0 10px rgba(255, 141, 161, 0.1);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.45), 0 0 12px rgba(255, 141, 161, 0.12);
   transition: all 0.3s ease;
   pointer-events: none;
+  display: block;
 }
 
 .mo-container:hover .mo-image {
   border-color: var(--lotus-pink);
-  box-shadow: 0 5px 18px rgba(255, 141, 161, 0.2);
+  box-shadow: 0 5px 22px rgba(255, 141, 161, 0.25);
 }
 
 /* Floating merit text (+1 Cong Duc) */
@@ -1840,32 +1843,111 @@ input[type="text"]:focus, textarea:focus {
   100% { transform: translateY(-65px) scale(1.15); opacity: 0; }
 }
 
-/* Tablet & Mobile responsive fixes for meditation view */
-@media (max-width: 480px) {
+/* === MOBILE RESPONSIVE: Meditation / Tịnh Tâm === */
+@media (max-width: 600px) {
+  .altar-container {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  /* Altar view at compact height */
   .altar-view {
-    height: 200px;
-    padding-bottom: 15px;
+    height: clamp(200px, 55vw, 280px);
+    border-radius: 12px;
   }
+
+  /* Altar slots relative position unchanged (uses %) */
   .altar-slot {
-    width: 90px;
+    width: 68px;
+    height: 88px;
   }
-  .lotus-offering {
-    width: 65px;
-    height: 65px;
+
+  #altar-flower-left  { left: 7%; }
+  #altar-flower-right { right: 7%; }
+  .altar-view .altar-slot:nth-child(1) { left: 7%; }
+  .altar-view .altar-slot:nth-child(3) { right: 7%; }
+
+  /* Controls */
+  .incense-controls {
+    padding: 12px 14px;
+    gap: 10px;
+    border-radius: 14px;
   }
-  .burner-image {
-    width: 65px;
-    height: 65px;
-  }
-  .incense-stick-holder {
-    height: 80px;
-    bottom: 42px;
-  }
+
+  /* Timer */
   .timer-display {
-    font-size: 2.1rem;
+    font-size: clamp(1.7rem, 9vw, 2.2rem);
   }
+
+  /* Slider label text */
+  .slider-container > div {
+    font-size: 0.82rem !important;
+  }
+
+  /* Music select */
+  .custom-select {
+    font-size: 0.82rem;
+    padding: 7px 10px;
+  }
+
+  /* Action buttons */
+  .incense-controls .action-buttons-flex {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .incense-controls .action-buttons-flex .btn {
+    width: 100%;
+    max-width: 260px;
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+
+  /* Mo section */
+  .mo-section {
+    padding-top: 2px;
+    gap: 6px;
+  }
+
+  .mo-section h3 {
+    font-size: 1.15rem !important;
+    margin-top: 10px !important;
+  }
+
+  .mo-section p {
+    font-size: 0.78rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Mõ gỗ - large tap target */
   .mo-image {
-    width: 85px;
-    height: 85px;
+    width: clamp(100px, 28vw, 130px);
+    height: clamp(100px, 28vw, 130px);
+  }
+
+  /* Merit counter text */
+  .mo-section > div {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Extra small phones (iPhone SE / 320px) */
+@media (max-width: 375px) {
+  .altar-view {
+    height: 185px;
+  }
+
+  .altar-slot {
+    width: 58px;
+    height: 78px;
+  }
+
+  .timer-display {
+    font-size: 1.65rem;
+  }
+
+  .mo-image {
+    width: 95px;
+    height: 95px;
   }
 }
