@@ -1590,11 +1590,11 @@ input[type="text"]:focus, textarea:focus {
 
 .incense-stick-holder {
   position: absolute;
-  bottom: 22px; /* positioned nested directly inside the burner bowl */
+  bottom: 22px; /* sits inside the burner bowl */
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
-  height: 95px;
+  height: clamp(50px, 14vw, 95px); /* scales down on small screens */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -1634,14 +1634,15 @@ input[type="text"]:focus, textarea:focus {
   100% { transform: scale(1.25); filter: brightness(1.6); }
 }
 
-/* Incense smoke container - positioned above the incense burner wrapper using % */
+/* Incense smoke container - floats above the burning stick tip */
 .smoke-container {
   position: absolute;
-  bottom: calc(35% + 55px); /* above the burner wrapper's bottom */
+  /* 35% = burner bottom, +clamp(68px,16vw,115px) ≈ burner height + stick height */
+  bottom: calc(35% + clamp(68px, 16vw, 115px));
   left: 50%;
   transform: translateX(-50%);
   width: 36px;
-  height: 80px;
+  height: 75px;
   pointer-events: none;
   z-index: 13;
   display: none;
@@ -1867,6 +1868,18 @@ input[type="text"]:focus, textarea:focus {
   .altar-view .altar-slot:nth-child(1) { left: 7%; }
   .altar-view .altar-slot:nth-child(3) { right: 7%; }
 
+  /* Incense stick — shorter on mobile so it stays within the altar frame */
+  .incense-stick-holder {
+    height: clamp(40px, 11vw, 65px);
+    bottom: 18px;
+  }
+
+  /* Smoke — pull down to match shorter stick on mobile */
+  .smoke-container {
+    bottom: calc(35% + clamp(50px, 12vw, 80px));
+    height: 60px;
+  }
+
   /* Controls */
   .incense-controls {
     padding: 12px 14px;
@@ -1931,7 +1944,7 @@ input[type="text"]:focus, textarea:focus {
   }
 }
 
-/* Extra small phones (iPhone SE / 320px) */
+/* Extra small phones (iPhone SE / 375px and under) */
 @media (max-width: 375px) {
   .altar-view {
     height: 185px;
@@ -1940,6 +1953,17 @@ input[type="text"]:focus, textarea:focus {
   .altar-slot {
     width: 58px;
     height: 78px;
+  }
+
+  /* Even shorter stick + smoke for tiny phones */
+  .incense-stick-holder {
+    height: 38px;
+    bottom: 16px;
+  }
+
+  .smoke-container {
+    bottom: calc(35% + 48px);
+    height: 52px;
   }
 
   .timer-display {
