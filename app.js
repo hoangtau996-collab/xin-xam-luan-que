@@ -17,6 +17,7 @@ let isIncenseBurning = false;
 let incenseInterval = null;
 let isFlowerOffered = false;
 let moCount = 0;
+let meditationMusicType = 'meditation';
 
 // Audio Context & Variables
 let audioCtx = null;
@@ -917,43 +918,53 @@ function startMeditationMusic() {
       audioCtx.resume();
     }
 
-    // Create main gain node for ambient music (soft and quiet in background)
-    droneGain = audioCtx.createGain();
-    droneGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    droneGain.connect(audioCtx.destination);
-
-    // 1. Deep harmonic drone (Root - A2 at 110Hz)
-    droneOsc1 = audioCtx.createOscillator();
-    droneOsc1.type = 'sine';
-    droneOsc1.frequency.setValueAtTime(110, audioCtx.currentTime);
-    
-    // Slow pitch modulation LFO (0.05Hz) to create a lively organic feel
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.type = 'sine';
-    lfo.frequency.value = 0.05; 
-    lfoGain.gain.value = 0.4; // fluctuate frequency slightly
-    lfo.connect(lfoGain);
-    lfoGain.connect(droneOsc1.frequency);
-    
-    droneOsc1.connect(droneGain);
-    lfo.start();
-    droneOsc1.start();
-
-    // 2. Harmonic fifth (Harmonic interval - E3 at 165Hz)
-    droneOsc2 = audioCtx.createOscillator();
-    droneOsc2.type = 'sine';
-    droneOsc2.frequency.setValueAtTime(165, audioCtx.currentTime);
-    droneOsc2.connect(droneGain);
-    droneOsc2.start();
-
-    // 3. Periodic Singing Bowl strikes (every 18 seconds)
-    playSingingBowl();
-    meditationInterval = setInterval(playSingingBowl, 18000);
+    if (meditationMusicType === 'none') {
+      return; // Do not start background music
+    }
 
     isMeditationPlaying = true;
+
+    if (meditationMusicType === 'meditation') {
+      // Create main gain node for ambient music (soft and quiet in background)
+      droneGain = audioCtx.createGain();
+      droneGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      droneGain.connect(audioCtx.destination);
+
+      // 1. Deep harmonic drone (Root - A2 at 110Hz)
+      droneOsc1 = audioCtx.createOscillator();
+      droneOsc1.type = 'sine';
+      droneOsc1.frequency.setValueAtTime(110, audioCtx.currentTime);
+      
+      const lfo = audioCtx.createOscillator();
+      const lfoGain = audioCtx.createGain();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.05; 
+      lfoGain.gain.value = 0.4;
+      lfo.connect(lfoGain);
+      lfoGain.connect(droneOsc1.frequency);
+      
+      droneOsc1.connect(droneGain);
+      lfo.start();
+      droneOsc1.start();
+
+      // 2. Harmonic fifth (Harmonic interval - E3 at 165Hz)
+      droneOsc2 = audioCtx.createOscillator();
+      droneOsc2.type = 'sine';
+      droneOsc2.frequency.setValueAtTime(165, audioCtx.currentTime);
+      droneOsc2.connect(droneGain);
+      droneOsc2.start();
+
+      // 3. Periodic Singing Bowl strikes (every 18 seconds)
+      playSingingBowl();
+      meditationInterval = setInterval(playSingingBowl, 18000);
+    } else if (meditationMusicType === 'singing-bowl') {
+      // Periodic Singing Bowl Ambient Strikes only (every 12 seconds)
+      playSingingBowl();
+      meditationInterval = setInterval(playSingingBowl, 12000);
+    }
   } catch (e) {
     console.error("Failed to start meditation soundscape:", e);
+    isMeditationPlaying = false;
   }
 }
 
@@ -1053,22 +1064,23 @@ function switchTab(tabId) {
   }
 }
 
-// Set duration of incense stick burning
-function setIncenseDuration(seconds) {
+// Handle custom time range slider change
+function handleSliderChange(minutes) {
   if (isIncenseBurning) return;
   
-  incenseDuration = seconds;
-  incenseTimeLeft = seconds;
+  incenseDuration = minutes * 60;
+  incenseTimeLeft = minutes * 60;
   
+  document.getElementById('incense-slider-val').textContent = minutes;
   updateIncenseTimerDisplay();
-  
-  // Toggle preset button classes
-  document.querySelectorAll('.preset-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  const activeBtn = document.getElementById(`preset-${seconds}`);
-  if (activeBtn) {
-    activeBtn.classList.add('active');
+}
+
+// Handle selection of background music type
+function handleMusicSelectChange(value) {
+  meditationMusicType = value;
+  stopMeditationMusic();
+  if (soundEnabled) {
+    startMeditationMusic();
   }
 }
 
@@ -1092,6 +1104,10 @@ function toggleIncense() {
     btnToggleIncense.classList.add('btn-red');
     btnToggleIncense.classList.remove('btn-green');
     btnToggleIncense.querySelector('span').textContent = 'Dập Hương Nhang';
+    
+    // Disable range slider while burning
+    const slider = document.getElementById('incense-time-slider');
+    if (slider) slider.disabled = true;
     
     // Sound cue for ignition
     playWoodClack(0, 1.8, 0.4);
@@ -1132,6 +1148,10 @@ function extinguishIncense(completed = false) {
   btnToggleIncense.classList.remove('btn-red');
   btnToggleIncense.classList.add('btn-green');
   btnToggleIncense.querySelector('span').textContent = 'Thắp Hương Nhang';
+  
+  // Re-enable range slider
+  const slider = document.getElementById('incense-time-slider');
+  if (slider) slider.disabled = false;
   
   incenseTip.classList.remove('lit');
   incenseSmoke.classList.remove('lit');
@@ -1217,22 +1237,45 @@ function playMoSound() {
       audioCtx.resume();
     }
     
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+    const now = audioCtx.currentTime;
     
-    // Mõ (wooden fish) acoustic signature
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.12);
+    // 1. Strike transient click (represents the hard mallet impact)
+    const clickOsc = audioCtx.createOscillator();
+    const clickGain = audioCtx.createGain();
+    clickOsc.type = 'triangle';
+    clickOsc.frequency.setValueAtTime(1200, now);
+    clickGain.gain.setValueAtTime(0.35, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+    clickOsc.connect(clickGain);
+    clickGain.connect(audioCtx.destination);
+    clickOsc.start(now);
+    clickOsc.stop(now + 0.015);
     
-    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+    // 2. Main hollow resonance (represents the air resonance in the wooden chamber)
+    const mainOsc = audioCtx.createOscillator();
+    const mainGain = audioCtx.createGain();
+    mainOsc.type = 'sine';
+    mainOsc.frequency.setValueAtTime(295, now);
+    mainOsc.frequency.exponentialRampToValueAtTime(265, now + 0.07);
+    mainGain.gain.setValueAtTime(0.85, now);
+    mainGain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+    mainOsc.connect(mainGain);
+    mainGain.connect(audioCtx.destination);
+    mainOsc.start(now);
+    mainOsc.stop(now + 0.15);
     
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    // 3. Secondary wooden wall harmonic partial
+    const resOsc = audioCtx.createOscillator();
+    const resGain = audioCtx.createGain();
+    resOsc.type = 'sine';
+    resOsc.frequency.setValueAtTime(455, now);
+    resGain.gain.setValueAtTime(0.3, now);
+    resGain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+    resOsc.connect(resGain);
+    resGain.connect(audioCtx.destination);
+    resOsc.start(now);
+    resOsc.stop(now + 0.09);
     
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.15);
   } catch (e) {
     console.error("Failed to play Mõ sound:", e);
   }

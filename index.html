@@ -32,7 +32,7 @@
   <!-- Fonts for Thư Pháp (Traditional calligraphy vibe) -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <!-- Magical shimmering sparkles / fireflies -->
@@ -333,6 +333,8 @@
                   <div class="smoke-particle smoke-p1"></div>
                   <div class="smoke-particle smoke-p2"></div>
                   <div class="smoke-particle smoke-p3"></div>
+                  <div class="smoke-particle smoke-p4"></div>
+                  <div class="smoke-particle smoke-p5"></div>
                 </div>
                 
                 <!-- Incense stick -->
@@ -355,13 +357,25 @@
             
             <!-- Controls section -->
             <div class="incense-controls">
+              <!-- Timer Display -->
               <div class="timer-display" id="incense-timer-display">02:00</div>
               
-              <div class="time-presets">
-                <button id="preset-120" class="preset-btn active" onclick="setIncenseDuration(120)">2 Phút</button>
-                <button id="preset-300" class="preset-btn" onclick="setIncenseDuration(300)">5 Phút</button>
-                <button id="preset-600" class="preset-btn" onclick="setIncenseDuration(600)">10 Phút</button>
-                <button id="preset-900" class="preset-btn" onclick="setIncenseDuration(900)">15 Phút</button>
+              <!-- Custom Time Slider (2 to 60 minutes) -->
+              <div class="slider-container" style="width: 100%; max-width: 320px; text-align: center; margin-bottom: 5px;">
+                <div style="font-size: 0.9rem; color: var(--text-light); font-weight: 600; margin-bottom: 8px;">
+                  Thời gian thắp hương: <span id="incense-slider-val" style="color: var(--lotus-pink-light); font-size: 1.05rem; font-weight: bold;">2</span> phút
+                </div>
+                <input type="range" id="incense-time-slider" min="2" max="60" value="2" class="custom-slider" oninput="handleSliderChange(this.value)">
+              </div>
+              
+              <!-- Ambient Music Selection -->
+              <div class="music-selector-container" style="width: 100%; max-width: 320px; text-align: center; margin-top: 5px; margin-bottom: 5px;">
+                <label for="music-select" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Chọn nhạc nền tịnh tâm:</label>
+                <select id="music-select" class="custom-select" onchange="handleMusicSelectChange(this.value)">
+                  <option value="meditation">🧘 Thiền Định Tịnh Tâm</option>
+                  <option value="singing-bowl">🔔 Chuông Xoay Tây Tạng</option>
+                  <option value="none">🔇 Tắt Nhạc Nền</option>
+                </select>
               </div>
               
               <div class="action-buttons-flex" style="margin-top: 15px; width: 100%; max-width: 420px;">
@@ -402,6 +416,14 @@
     </footer>
   </div>
 
+  <!-- Hidden SVG for Organic Smoke Filter -->
+  <svg style="display: none; width: 0; height: 0;">
+    <filter id="organic-smoke">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015 0.04" numOctaves="4" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
   <!-- MODAL: Luận giải chi tiết phóng to -->
   <div id="details-modal" class="modal">
     <div class="modal-content">
@@ -424,7 +446,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="que_data.js?v=4"></script>
-  <script src="app.js?v=4"></script>
+  <script src="que_data.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

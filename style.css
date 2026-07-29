@@ -1495,33 +1495,47 @@ input[type="text"]:focus, textarea:focus {
 .altar-view {
   position: relative;
   width: 100%;
-  height: 240px;
-  background: linear-gradient(to bottom, rgba(15, 45, 30, 0.9), rgba(9, 28, 19, 0.95));
+  height: 380px; /* Taller height to showcase the stunning altar table */
+  background: url('altar_table.jpg') no-repeat center;
+  background-size: cover;
   border: 1.5px solid rgba(255, 141, 161, 0.15);
   border-radius: 16px;
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  padding-bottom: 25px;
-  box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 35px rgba(0,0,0,0.6);
   overflow: hidden;
 }
 
-/* Altar slots */
+/* Altar slots - positioned absolutely on the wooden tabletop */
 .altar-slot {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  width: 110px;
-  height: 100%;
-  position: relative;
-  z-index: 5;
+  width: 90px;
+  height: 110px;
+  position: absolute;
+  bottom: 125px; /* tabletop level */
+  z-index: 10;
+}
+
+#altar-flower-left {
+  left: 16%;
+}
+
+#altar-flower-right {
+  right: 16%;
+}
+
+.altar-view .altar-slot:nth-child(1) {
+  left: 16%;
+}
+
+.altar-view .altar-slot:nth-child(3) {
+  right: 16%;
 }
 
 .lotus-offering {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid var(--lotus-pink);
@@ -1538,33 +1552,37 @@ input[type="text"]:focus, textarea:focus {
 }
 
 .offering-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  margin-top: 8px;
+  margin-top: 6px;
   font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* Center incense burner */
+/* Center incense burner - positioned absolutely on the wooden tabletop */
 .incense-burner-wrapper {
-  position: relative;
-  width: 110px;
+  position: absolute;
+  bottom: 125px; /* tabletop level */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  height: 100%;
-  z-index: 6;
+  height: 70px;
+  z-index: 12;
 }
 
 .burner-image {
-  width: 75px;
-  height: 75px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid #b8860b;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  border: 1.8px solid #b8860b;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
   z-index: 8;
   background-color: #000;
   pointer-events: none;
@@ -1572,20 +1590,23 @@ input[type="text"]:focus, textarea:focus {
 
 .incense-stick-holder {
   position: absolute;
-  bottom: 50px;
+  bottom: 165px; /* positioned sitting inside the burner bowl */
+  left: 50%;
+  transform: translateX(-50%);
   width: 6px;
   height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  z-index: 7;
+  z-index: 11;
+  pointer-events: none;
 }
 
 .incense-stick {
-  width: 2.5px;
-  height: 0%; /* Dynamic height */
-  background: linear-gradient(to top, #704214, #d2b48c);
+  width: 2.2px;
+  height: 0%; /* Dynamic height controlled by JavaScript */
+  background: linear-gradient(to top, #502e10, #ab8a5b);
   border-radius: 1px;
   position: relative;
   transition: height 1s linear;
@@ -1595,8 +1616,8 @@ input[type="text"]:focus, textarea:focus {
   position: absolute;
   top: -2px;
   left: -1px;
-  width: 4.5px;
-  height: 4.5px;
+  width: 4.2px;
+  height: 4.2px;
   background-color: #ff4500;
   border-radius: 50%;
   box-shadow: 0 0 6px #ff4500, 0 0 12px #ff8c00;
@@ -1613,16 +1634,16 @@ input[type="text"]:focus, textarea:focus {
   100% { transform: scale(1.25); filter: brightness(1.6); }
 }
 
-/* Incense smoke container */
+/* Incense smoke container - positioned above the burning tip */
 .smoke-container {
   position: absolute;
-  top: 15px; /* positioned above the stick holder */
+  bottom: 255px; /* floating above the incense stick holder area */
   left: 50%;
   transform: translateX(-50%);
   width: 40px;
-  height: 60px;
+  height: 80px;
   pointer-events: none;
-  z-index: 9;
+  z-index: 13;
   display: none;
 }
 
@@ -1630,25 +1651,29 @@ input[type="text"]:focus, textarea:focus {
   display: block;
 }
 
+/* Gorgeous SVG-filtered organic smoke particle style */
 .smoke-particle {
   position: absolute;
-  width: 3.5px;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  filter: blur(1.8px);
+  width: 8px;
+  height: 24px;
+  background: radial-gradient(circle, rgba(230, 230, 240, 0.16) 0%, rgba(230, 230, 240, 0) 70%);
+  filter: url(#organic-smoke) blur(2.5px);
+  -webkit-filter: url(#organic-smoke) blur(2.5px);
   border-radius: 50%;
-  animation: drift-smoke 4s infinite linear;
+  animation: drift-smoke 4.5s infinite linear;
 }
 
-.smoke-p1 { left: 8px; animation-delay: 0s; }
-.smoke-p2 { left: 18px; animation-delay: 1.3s; animation-duration: 4.5s; }
-.smoke-p3 { left: 28px; animation-delay: 2.7s; animation-duration: 3.8s; }
+.smoke-p1 { left: 5px; animation-delay: 0s; }
+.smoke-p2 { left: 13px; animation-delay: 0.9s; animation-duration: 4.8s; }
+.smoke-p3 { left: 21px; animation-delay: 1.8s; animation-duration: 3.9s; }
+.smoke-p4 { left: 17px; animation-delay: 2.7s; animation-duration: 5.2s; }
+.smoke-p5 { left: 9px; animation-delay: 3.6s; animation-duration: 4.3s; }
 
 @keyframes drift-smoke {
-  0% { transform: translateY(35px) scale(0.6) translateX(0); opacity: 0; }
-  20% { opacity: 0.55; }
-  60% { transform: translateY(0px) scale(1.4) translateX(12px); opacity: 0.25; }
-  100% { transform: translateY(-35px) scale(2.2) translateX(-6px); opacity: 0; }
+  0% { transform: translateY(50px) scale(0.5) translateX(0); opacity: 0; }
+  15% { opacity: 0.65; }
+  60% { transform: translateY(15px) scale(1.6) translateX(15px); opacity: 0.3; }
+  100% { transform: translateY(-50px) scale(2.8) translateX(-10px); opacity: 0; }
 }
 
 /* INCENSE CONTROLS & TIMERS */
@@ -1674,28 +1699,78 @@ input[type="text"]:focus, textarea:focus {
   line-height: 1.1;
 }
 
-.time-presets {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.preset-btn {
+/* Premium Range Slider styling */
+.custom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
   background: rgba(14, 38, 26, 0.7);
-  border: 1px solid rgba(255, 141, 161, 0.2);
-  color: var(--text-muted);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s ease;
+  outline: none;
+  border: 1.2px solid rgba(255, 141, 161, 0.15);
+  margin: 12px 0;
+  transition: all 0.3s;
 }
 
-.preset-btn:hover {
-  border-color: rgba(255, 141, 161, 0.4);
-  color: var(--text-light);
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--lotus-pink);
+  border: 2.2px solid var(--lotus-pink-light);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 141, 161, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.custom-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.custom-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--lotus-pink);
+  border: 2.2px solid var(--lotus-pink-light);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 141, 161, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.custom-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+}
+
+/* Premium Select Dropdown styling */
+.custom-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(14, 38, 26, 0.85);
+  border: 1.2px solid rgba(255, 141, 161, 0.2);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.custom-select:hover {
+  border-color: var(--lotus-pink-light);
+  box-shadow: 0 4px 12px rgba(255, 141, 161, 0.25);
+}
+
+.custom-select option {
+  background-color: #0f2d1e;
+  color: #fff;
 }
 
 .preset-btn.active {
