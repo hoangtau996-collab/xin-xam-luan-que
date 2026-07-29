@@ -961,6 +961,10 @@ function startMeditationMusic() {
       // Periodic Singing Bowl Ambient Strikes only (every 12 seconds)
       playSingingBowl();
       meditationInterval = setInterval(playSingingBowl, 12000);
+    } else if (meditationMusicType === 'melodious') {
+      // Procedural Melodious Flute Music (every 2.4 seconds)
+      playMelodiousNote();
+      meditationInterval = setInterval(playMelodiousNote, 2400);
     }
   } catch (e) {
     console.error("Failed to start meditation soundscape:", e);
@@ -1278,5 +1282,66 @@ function playMoSound() {
     
   } catch (e) {
     console.error("Failed to play Mõ sound:", e);
+  }
+}
+
+// Procedural Traditional Bamboo Flute Melody Synthesizer (infinite relax ambient)
+function playMelodiousNote() {
+  if (!soundEnabled || meditationMusicType !== 'melodious' || !audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    
+    // Pentatonic scale: C4, D4, E4, G4, A4, C5, D5, E5, G5
+    const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99];
+    const freq = scale[Math.floor(Math.random() * scale.length)];
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    
+    // Warm woodwind triangle texture
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, now);
+    
+    // Soft pitch vibrato LFO (5.2Hz to 6.2Hz)
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = 5.2 + Math.random() * 1.0;
+    lfoGain.gain.value = freq * 0.008; // depth scales with pitch
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+    
+    // Lowpass filter to smooth out high harmonics
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(freq * 2.5, now);
+    filter.Q.value = 1.0;
+    
+    // Flute volume envelope (slow 400ms attack, long decay)
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.06, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 2.8);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    
+    // Echo Delay feedback line
+    const delay = audioCtx.createDelay();
+    delay.delayTime.value = 0.45;
+    const feedback = audioCtx.createGain();
+    feedback.gain.value = 0.35; // feedback echo volume
+    
+    gain.connect(audioCtx.destination); // dry
+    gain.connect(delay); // wet
+    delay.connect(feedback);
+    feedback.connect(delay); // feedback loop
+    feedback.connect(audioCtx.destination);
+    
+    lfo.start(now);
+    osc.start(now);
+    
+    lfo.stop(now + 3.0);
+    osc.stop(now + 3.0);
+  } catch (e) {
+    console.error("Failed to play flute note:", e);
   }
 }

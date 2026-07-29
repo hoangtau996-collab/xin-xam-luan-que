@@ -1513,7 +1513,7 @@ input[type="text"]:focus, textarea:focus {
   width: 90px;
   height: 110px;
   position: absolute;
-  bottom: 125px; /* tabletop level */
+  bottom: 135px; /* tabletop level */
   z-index: 10;
 }
 
@@ -1564,7 +1564,7 @@ input[type="text"]:focus, textarea:focus {
 /* Center incense burner - positioned absolutely on the wooden tabletop */
 .incense-burner-wrapper {
   position: absolute;
-  bottom: 125px; /* tabletop level */
+  bottom: 135px; /* aligned exactly on the new wooden tabletop */
   left: 50%;
   transform: translateX(-50%);
   width: 80px;
@@ -1590,16 +1590,16 @@ input[type="text"]:focus, textarea:focus {
 
 .incense-stick-holder {
   position: absolute;
-  bottom: 165px; /* positioned sitting inside the burner bowl */
+  bottom: 22px; /* positioned nested directly inside the burner bowl */
   left: 50%;
   transform: translateX(-50%);
-  width: 6px;
-  height: 100px;
+  width: 4px;
+  height: 95px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  z-index: 11;
+  z-index: 9;
   pointer-events: none;
 }
 
@@ -1634,14 +1634,14 @@ input[type="text"]:focus, textarea:focus {
   100% { transform: scale(1.25); filter: brightness(1.6); }
 }
 
-/* Incense smoke container - positioned above the burning tip */
+/* Incense smoke container - positioned relatively above the burner wrapper */
 .smoke-container {
   position: absolute;
-  bottom: 255px; /* floating above the incense stick holder area */
+  bottom: 105px; /* positioned floating exactly above the burning stick tip */
   left: 50%;
   transform: translateX(-50%);
   width: 40px;
-  height: 80px;
+  height: 90px;
   pointer-events: none;
   z-index: 13;
   display: none;
