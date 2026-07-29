@@ -60,8 +60,34 @@ const btnToggleIncense = document.getElementById('btn-toggle-incense');
 const btnToggleFlowers = document.getElementById('btn-toggle-flowers');
 const moCounter = document.getElementById('mo-counter');
 
+// Unlock Web Audio Context on first touch/click for iOS/Android
+function unlockAudioContext() {
+  const events = ['click', 'touchstart', 'touchend', 'mousedown'];
+  const unlock = () => {
+    initAudio();
+    if (audioCtx) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(cleanUp);
+      } else {
+        cleanUp();
+      }
+    }
+  };
+  const cleanUp = () => {
+    events.forEach(e => document.removeEventListener(e, unlock));
+    // Start music on first tap if sound enabled
+    if (soundEnabled && !isMeditationPlaying) {
+      startMeditationMusic();
+    }
+  };
+  events.forEach(e => document.addEventListener(e, unlock, { passive: true }));
+}
+
 // Initialize App
 window.addEventListener('DOMContentLoaded', () => {
+  // Unlock audio on iOS/Android user gesture
+  unlockAudioContext();
+
   // Visitor counter logic (starting from 199)
   let visits = localStorage.getItem('xin_xam_visits');
   if (!visits) {
@@ -162,6 +188,9 @@ function toggleSound() {
 function initAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
   }
 }
 
