@@ -2,7 +2,7 @@
 let currentStep = 'keo'; // keo, shake, result
 let activeTab = 'fortune'; // fortune, meditation
 let interpretMode = 'full'; // full, instant
-let userWish = 'Thành tâm khấn nguyện';
+let userWish = '';
 let attemptsCount = 0;
 let hasSucceededKeo = false;
 let shakeCount = 0;
@@ -130,6 +130,10 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!checkTimeLock()) {
     showSection('keo');
   }
+
+  // Apply saved language on load
+  applyLanguage();
+  userWish = t('msg.wish_default');
 });
 
 // Check if user is locked out
@@ -145,7 +149,7 @@ function checkTimeLock() {
       blockTimerContainer.classList.remove('hidden');
       btnToss.disabled = true;
       btnToss.style.opacity = '0.5';
-      keoResultMsg.textContent = "Bạn đang bị tạm khóa do gieo keo bất thành 3 lần.";
+      keoResultMsg.textContent = t('msg.keo_locked');
       
       startCountdown(timeRemaining);
       return true;
@@ -171,7 +175,7 @@ function startCountdown(durationMs) {
       blockTimerContainer.classList.add('hidden');
       btnToss.disabled = false;
       btnToss.style.opacity = '1';
-      keoResultMsg.textContent = "Hãy nhấn 'Gieo Keo' bên dưới.";
+      keoResultMsg.textContent = t('msg.keo_unlocked');
       attemptsCount = 0;
       resetAttemptSlots();
       return;
@@ -349,7 +353,7 @@ function tossKeo() {
       hasSucceededKeo = true;
       slot.classList.add('sap-ngua');
       slot.textContent = '☯';
-      keoResultMsg.innerHTML = `<span style="color:#2e8b57; font-weight:bold;">Nhất Âm Nhất Dương (Sấp - Ngửa)!</span><br>Thần Phật đồng ý. Hãy lắc ống xăm.`;
+      keoResultMsg.innerHTML = `<span style="color:#2e8b57; font-weight:bold;">${t('msg.keo_success')}</span><br>${t('msg.keo_success_sub')}`;
       
       btnToss.classList.add('hidden');
       btnNextStep.classList.remove('hidden');
@@ -359,11 +363,11 @@ function tossKeo() {
     } else if (result === 'sap-sap') {
       slot.classList.add('sap-sap');
       slot.textContent = 'C'; // Cười (Kiêu)
-      keoResultMsg.innerHTML = `<span style="color:#ff3b3b;">Keo Sấp - Sấp (Kiêu bôi - Cười)!</span><br>Thần Phật chưa rõ ý nguyện. Hãy gieo lại.`;
+      keoResultMsg.innerHTML = `<span style="color:#ff3b3b;">${t('msg.keo_sap_sap')}</span><br>${t('msg.keo_sap_sap_sub')}`;
     } else {
       slot.classList.add('ngua-ngua');
       slot.textContent = 'Đ'; // Đổ (Âm)
-      keoResultMsg.innerHTML = `<span style="color:#f39c12;">Keo Ngửa - Ngửa (Âm bôi - Đổ)!</span><br>Thần Phật giận/không thuận. Hãy gieo lại.`;
+      keoResultMsg.innerHTML = `<span style="color:#f39c12;">${t('msg.keo_ngua_ngua')}</span><br>${t('msg.keo_ngua_ngua_sub')}`;
     }
     
     // Check if failed all 3 attempts
@@ -376,7 +380,7 @@ function tossKeo() {
         blockTimerContainer.classList.remove('hidden');
         btnToss.disabled = true;
         btnToss.style.opacity = '0.5';
-        keoResultMsg.textContent = "Xin keo bất thành 3 lần. Vui lòng thử lại sau.";
+        keoResultMsg.textContent = t('msg.keo_fail_3');
         startCountdown(30 * 60 * 1000);
       }, 500);
     }
@@ -508,7 +512,7 @@ function handleShakeTap() {
     setTimeout(() => {
       btnReveal.classList.remove('hidden');
       btnReveal.classList.add('shake-instruction-pulse');
-      document.getElementById('shake-instruction').textContent = "Thẻ xăm đã rơi ra! Nhấn nút để xem.";
+      document.getElementById('shake-instruction').textContent = t('msg.stick_fallen');
     }, 1500);
   }
 }
@@ -520,32 +524,32 @@ function getInstantAdvice(queName) {
   let colorClass = "";
   
   if (queName.includes("Thượng Thượng")) {
-    verdict = "THƯỢNG THƯỢNG (ĐẠI CÁT)";
-    note = "Xăm Đại Cát: Mọi việc hanh thông cực thịnh, cầu được ước thấy, cát tường như ý.";
+    verdict = t('advice.supreme');
+    note = t('advice.supreme_note');
     colorClass = "text-gold";
   } else if (queName.includes("Thượng Cát")) {
-    verdict = "THƯỢNG CÁT (TỐT LÀNH)";
-    note = "Xăm Tốt: Thời vận hanh thông, công danh rạng rỡ, mọi việc suôn sẻ khởi sắc.";
+    verdict = t('advice.good');
+    note = t('advice.good_note');
     colorClass = "text-gold";
   } else if (queName.includes("Trung Cát")) {
-    verdict = "TRUNG CÁT (KHÁ TỐT)";
-    note = "Xăm Khá: Vận khí đang lên, gặp nhiều cơ hội tốt, nhân duyên thuận hòa.";
+    verdict = t('advice.fair_good');
+    note = t('advice.fair_good_note');
     colorClass = "text-gold";
   } else if (queName.includes("Trung Bình")) {
-    verdict = "TRUNG BÌNH (BÌNH HÒA)";
-    note = "Xăm Bình Hòa: Vận thế ổn định, không nên thay đổi lớn hay mạo hiểm, tĩnh thủ là hơn.";
+    verdict = t('advice.average');
+    note = t('advice.average_note');
     colorClass = "text-orange";
   } else if (queName.includes("Hạ Cát")) {
-    verdict = "HẠ CÁT (HƠI XẤU)";
-    note = "Xăm Hơi Xấu: Có chút khó khăn, chướng ngại cản lối, làm việc cần nhẫn nại, cẩn trọng.";
+    verdict = t('advice.below');
+    note = t('advice.below_note');
     colorClass = "text-red-light";
   } else if (queName.includes("Hạ Hạ")) {
-    verdict = "HẠ HẠ (ĐẠI HUNG)";
-    note = "Xăm Xấu: Vận hạn cản lối, thị phi trắc trở, mọi việc cần hết sức cẩn trọng, đề phòng rủi ro.";
+    verdict = t('advice.bad');
+    note = t('advice.bad_note');
     colorClass = "text-red";
   } else {
-    verdict = "TRUNG BÌNH";
-    note = "Xăm Bình Hòa: Vận thế bình thường, nên làm việc thiện tích đức.";
+    verdict = t('advice.average');
+    note = t('advice.average_note');
     colorClass = "text-orange";
   }
   return { verdict, note, colorClass };
@@ -556,9 +560,11 @@ function revealFortune() {
   if (!selectedQue) return;
   currentStep = 'result';
   
+  const isEn = getLang() === 'en';
+  
   // Fill common text inside scroll
-  document.getElementById('scroll-que-name').textContent = selectedQue.name;
-  document.getElementById('scroll-que-subtitle').textContent = `« ${selectedQue.title} »`;
+  document.getElementById('scroll-que-name').textContent = isEn ? (selectedQue.name_en || selectedQue.name) : selectedQue.name;
+  document.getElementById('scroll-que-subtitle').textContent = `« ${isEn ? (selectedQue.title_en || selectedQue.title) : selectedQue.title} »`;
   document.getElementById('scroll-user-wish').textContent = userWish;
 
   const btnShowDetails = document.getElementById('btn-show-details');
@@ -582,14 +588,19 @@ function revealFortune() {
     scrollFullSections.classList.remove('hidden');
     btnShowDetails.classList.remove('hidden');
 
-    document.getElementById('scroll-poem').innerHTML = selectedQue.poem.replace(/\n/g, '<br>');
-    document.getElementById('scroll-translation').innerHTML = selectedQue.translation.replace(/\n/g, '<br>');
-    document.getElementById('scroll-meaning').textContent = selectedQue.meaning;
+    const poem = isEn ? (selectedQue.poem_en || selectedQue.poem) : selectedQue.poem;
+    const trans = isEn ? (selectedQue.translation_en || selectedQue.translation) : selectedQue.translation;
+    const meaning = isEn ? (selectedQue.meaning_en || selectedQue.meaning) : selectedQue.meaning;
+
+    document.getElementById('scroll-poem').innerHTML = poem.replace(/\n/g, '<br>');
+    document.getElementById('scroll-translation').innerHTML = trans.replace(/\n/g, '<br>');
+    document.getElementById('scroll-meaning').textContent = meaning;
     
-    // Render details table
+    // Render details table with localized content
+    const details = isEn ? (selectedQue.details_en || selectedQue.details) : selectedQue.details;
     const tbody = document.getElementById('scroll-details-tbody');
     tbody.innerHTML = '';
-    for (const [key, val] of Object.entries(selectedQue.details)) {
+    for (const [key, val] of Object.entries(details)) {
       const row = document.createElement('tr');
       row.innerHTML = `<td>${key}</td><td>${val}</td>`;
       tbody.appendChild(row);
@@ -598,7 +609,7 @@ function revealFortune() {
     // Render details modal content
     const modalContent = document.getElementById('modal-details-content');
     modalContent.innerHTML = '';
-    for (const [key, val] of Object.entries(selectedQue.details)) {
+    for (const [key, val] of Object.entries(details)) {
       const row = document.createElement('div');
       row.className = 'modal-detail-row';
       row.innerHTML = `
@@ -641,7 +652,7 @@ function resetApp() {
   btnNextStep.classList.add('hidden');
   btnToss.disabled = false;
   btnToss.style.opacity = '1';
-  keoResultMsg.textContent = "Hãy thành tâm khấn nguyện trong tâm rồi nhấn 'Gieo Keo'.";
+  keoResultMsg.textContent = t('msg.keo_reset');
   
   // Reset coins classes
   keo1.querySelector('.keo-inner').className = 'keo-inner';
@@ -728,11 +739,11 @@ function saveAsImage() {
   ctx.textAlign = 'center';
   ctx.fillStyle = '#c94a61';
   ctx.font = 'bold 36px "Times New Roman", Georgia, serif';
-  ctx.fillText('XĂM LINH QUẺ THÁNH MẪU', width / 2, 85);
+  ctx.fillText(t('canvas.header'), width / 2, 85);
   
   ctx.font = 'italic 18px "Georgia", serif';
   ctx.fillStyle = '#27794e';
-  ctx.fillText('Chân thành cầu nguyện - Hanh thông cát tường', width / 2, 115);
+  ctx.fillText(t('canvas.subheader'), width / 2, 115);
   
   // Divider line
   ctx.strokeStyle = 'rgba(255, 141, 161, 0.3)';
@@ -746,7 +757,7 @@ function saveAsImage() {
   ctx.textAlign = 'center';
   ctx.font = 'italic 18px "Georgia", serif';
   ctx.fillStyle = '#0c2b1a';
-  ctx.fillText('« Vạn sự tùy duyên - Thành tâm khấn nguyện »', width / 2, 175);
+  ctx.fillText(t('canvas.pilgrim'), width / 2, 175);
   
   // Divider
   const dividerY = 195;
@@ -760,12 +771,13 @@ function saveAsImage() {
   ctx.fillStyle = '#c94a61';
   ctx.font = 'bold 30px "Times New Roman", Georgia, serif';
   const nameY = dividerY + 50;
-  ctx.fillText(selectedQue.name, width / 2, nameY);
+  const canvasIsEn = getLang() === 'en';
+  ctx.fillText(canvasIsEn ? (selectedQue.name_en || selectedQue.name) : selectedQue.name, width / 2, nameY);
   
   ctx.fillStyle = '#27794e';
   ctx.font = 'bold 24px "Times New Roman", Georgia, serif';
   const titleY = nameY + 40;
-  ctx.fillText(`« ${selectedQue.title} »`, width / 2, titleY);
+  ctx.fillText(`« ${canvasIsEn ? (selectedQue.title_en || selectedQue.title) : selectedQue.title} »`, width / 2, titleY);
   
   // 6. Draw Content depending on interpretation mode
   if (interpretMode === 'instant') {
@@ -773,7 +785,7 @@ function saveAsImage() {
     ctx.fillStyle = '#c94a61';
     ctx.font = 'bold 22px "Times New Roman", Georgia, serif';
     const instantTitleY = titleY + 60;
-    ctx.fillText('LỜI KHUYÊN TỨC THÌ', width / 2, instantTitleY);
+    ctx.fillText(t('canvas.instant_title'), width / 2, instantTitleY);
 
     // Inner dashed box
     ctx.strokeStyle = 'rgba(255, 141, 161, 0.3)';
@@ -803,10 +815,11 @@ function saveAsImage() {
     ctx.fillStyle = '#c94a61';
     ctx.font = 'bold 20px "Times New Roman", Georgia, serif';
     const poemTitleY = titleY + 50;
-    ctx.fillText('THƠ THẦN', width / 2, poemTitleY);
+    ctx.fillText(t('canvas.poem_title'), width / 2, poemTitleY);
     
     ctx.font = '19px "Georgia", serif';
-    const poemLines = selectedQue.poem.split('\n');
+    const canvasPoem = canvasIsEn ? (selectedQue.poem_en || selectedQue.poem) : selectedQue.poem;
+    const poemLines = canvasPoem.split('\n');
     let poemY = poemTitleY + 35;
     poemLines.forEach(line => {
       ctx.fillText(line, width / 2, poemY);
@@ -815,10 +828,11 @@ function saveAsImage() {
     
     ctx.font = 'bold 20px "Times New Roman", Georgia, serif';
     const transTitleY = poemY + 25;
-    ctx.fillText('DỊCH NGHĨA', width / 2, transTitleY);
+    ctx.fillText(t('canvas.trans_title'), width / 2, transTitleY);
     
     ctx.font = 'italic 18px "Georgia", serif';
-    const transLines = selectedQue.translation.split('\n');
+    const canvasTrans = canvasIsEn ? (selectedQue.translation_en || selectedQue.translation) : selectedQue.translation;
+    const transLines = canvasTrans.split('\n');
     let transY = transTitleY + 35;
     transLines.forEach(line => {
       ctx.fillText(line, width / 2, transY);
@@ -830,21 +844,23 @@ function saveAsImage() {
     ctx.fillStyle = '#c94a61';
     ctx.font = 'bold 20px "Times New Roman", Georgia, serif';
     const meaningTitleY = transY + 25;
-    ctx.fillText('Ý NGHĨA CHUNG:', 60, meaningTitleY);
+    ctx.fillText(t('canvas.meaning_title'), 60, meaningTitleY);
     
     ctx.fillStyle = '#0c2b1a';
     ctx.font = '17px "Georgia", serif';
-    const meaningY = wrapCanvasText(ctx, selectedQue.meaning, 60, meaningTitleY + 30, width - 120, 24);
+    const canvasMeaning = canvasIsEn ? (selectedQue.meaning_en || selectedQue.meaning) : selectedQue.meaning;
+    const meaningY = wrapCanvasText(ctx, canvasMeaning, 60, meaningTitleY + 30, width - 120, 24);
     
     // 8. Draw Details (Rendered like grid/text)
     ctx.fillStyle = '#c94a61';
     ctx.font = 'bold 20px "Times New Roman", Georgia, serif';
     const detailsTitleY = meaningY + 15;
-    ctx.fillText('CHI TIẾT LUẬN GIẢI:', 60, detailsTitleY);
+    ctx.fillText(t('canvas.details_title'), 60, detailsTitleY);
     
     ctx.font = '16px "Georgia", serif';
     let detailY = detailsTitleY + 30;
-    for (const [key, val] of Object.entries(selectedQue.details)) {
+    const canvasDetails = canvasIsEn ? (selectedQue.details_en || selectedQue.details) : selectedQue.details;
+    for (const [key, val] of Object.entries(canvasDetails)) {
       ctx.fillStyle = '#163f2b';
       ctx.font = 'bold 16px "Georgia", serif';
       ctx.fillText(`• ${key}: `, 70, detailY);
@@ -873,8 +889,8 @@ function saveAsImage() {
   ctx.fillStyle = '#ff8da1';
   ctx.font = 'bold 15px "Georgia", serif';
   ctx.textAlign = 'center';
-  ctx.fillText('LINH QUẺ', 42, 38);
-  ctx.fillText('CÁT TƯỜNG', 42, 60);
+  ctx.fillText(t('canvas.seal_1'), 42, 38);
+  ctx.fillText(t('canvas.seal_2'), 42, 60);
   ctx.restore();
   
   // 10. Trigger Image Download
@@ -888,10 +904,10 @@ function saveAsImage() {
     document.body.removeChild(link);
     
     // Show premium visual success feedback
-    showToast("Đã lưu ảnh quẻ xăm thành công!");
+    showToast(t('toast.save_success'));
   } catch (err) {
     console.error("Lỗi khi xuất ảnh: ", err);
-    alert("Không thể lưu ảnh tự động. Xin hãy thử lại trên trình duyệt khác hoặc chụp ảnh màn hình.");
+    alert(t('toast.save_error'));
   }
 }
 
@@ -1131,7 +1147,7 @@ function toggleIncense() {
     isIncenseBurning = true;
     btnToggleIncense.classList.add('btn-red');
     btnToggleIncense.classList.remove('btn-green');
-    btnToggleIncense.querySelector('span').textContent = 'Dập Hương Nhang';
+    btnToggleIncense.querySelector('span').textContent = t('meditation.btn_extinguish');
     
     // Disable range slider while burning
     const slider = document.getElementById('incense-time-slider');
@@ -1175,7 +1191,7 @@ function extinguishIncense(completed = false) {
   
   btnToggleIncense.classList.remove('btn-red');
   btnToggleIncense.classList.add('btn-green');
-  btnToggleIncense.querySelector('span').textContent = 'Thắp Hương Nhang';
+  btnToggleIncense.querySelector('span').textContent = t('meditation.btn_light');
   
   // Re-enable range slider
   const slider = document.getElementById('incense-time-slider');
@@ -1190,9 +1206,9 @@ function extinguishIncense(completed = false) {
   
   if (completed) {
     playSingingBowl(); // Strike singing bowl
-    showToast("Nén hương đã tàn. Tịnh tâm viên mãn!");
+    showToast(t('toast.incense_done'));
   } else {
-    showToast("Đã dập tắt nén hương.");
+    showToast(t('toast.incense_off'));
   }
 }
 
@@ -1203,16 +1219,16 @@ function toggleFlowerOffering() {
   if (isFlowerOffered) {
     altarFlowerLeft.classList.add('show');
     altarFlowerRight.classList.add('show');
-    btnToggleFlowers.querySelector('span').textContent = 'Thu Hoa Sen Về';
+    btnToggleFlowers.querySelector('span').textContent = t('meditation.btn_flower_back');
     
     // Synthesized gentle bell ring
     playWoodClack(0, 2.2, 0.45);
-    showToast("Đã dâng hoa sen thanh khiết lên ban thờ!");
+    showToast(t('toast.flower_on'));
   } else {
     altarFlowerLeft.classList.remove('show');
     altarFlowerRight.classList.remove('show');
-    btnToggleFlowers.querySelector('span').textContent = 'Dâng Hoa Sen Vàng';
-    showToast("Đã thu hồi hoa sen.");
+    btnToggleFlowers.querySelector('span').textContent = t('meditation.btn_flower_gold');
+    showToast(t('toast.flower_off'));
   }
 }
 
@@ -1242,7 +1258,7 @@ function handleMoClick(e) {
   
   const meritEl = document.createElement('div');
   meritEl.className = 'floating-merit';
-  meritEl.textContent = '+1 Công Đức';
+  meritEl.textContent = t('meditation.merit_float');
   meritEl.style.left = `${clickX - 35}px`;
   meritEl.style.top = `${clickY - 20}px`;
   
@@ -1369,3 +1385,12 @@ function playMelodiousNote() {
     console.error("Failed to play flute note:", e);
   }
 }
+
+// Listen for language changes and update dynamic content
+window.addEventListener('langChanged', function() {
+  userWish = t('msg.wish_default');
+  // Re-render fortune result if currently showing
+  if (currentStep === 'result' && selectedQue) {
+    revealFortune();
+  }
+});

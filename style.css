@@ -1975,3 +1975,70 @@ input[type="text"]:focus, textarea:focus {
     height: 95px;
   }
 }
+
+/* ═══════════════════════════════════════════
+   Language Toggle Control
+   ═══════════════════════════════════════════ */
+.lang-control {
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  z-index: 100;
+  cursor: pointer;
+}
+
+.lang-control .btn-round {
+  width: auto;
+  height: auto;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--gold-light);
+  font-size: 1rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4),
+              0 0 10px rgba(255, 215, 0, 0.1);
+}
+
+.lang-control .btn-round:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 25px rgba(255, 141, 161, 0.3);
+  border-color: var(--lotus-pink-light);
+}
+
+.lang-control .btn-round:active {
+  transform: scale(0.95);
+}
+
+.lang-control .icon-lang {
+  font-size: 1.2rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.lang-control .lang-label {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--lotus-pink-light);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .lang-control {
+    bottom: 15px;
+    left: 15px;
+  }
+  .lang-control .btn-round {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}

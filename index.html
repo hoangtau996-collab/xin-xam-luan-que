@@ -14,17 +14,26 @@
   <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph / Facebook / Zalo / LinkedIn / WhatsApp -->
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hoangtau996-collab.github.io/xin-xam-luan-que/">
   <meta property="og:title" content="Xin Xăm - Luận Quẻ Tâm Linh">
   <meta property="og:description" content="Trải nghiệm gieo keo âm dương, lắc ống xăm và luận giải quẻ xăm Thánh Mẫu truyền thống cát tường.">
   <meta property="og:image" content="https://hoangtau996-collab.github.io/xin-xam-luan-que/seo_cover.jpg">
+  <meta property="og:image:secure_url" content="https://hoangtau996-collab.github.io/xin-xam-luan-que/seo_cover.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Xin Xăm - Luận Quẻ Tâm Linh">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:site_name" content="Xin Xăm - Luận Quẻ Tâm Linh">
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="Xin Xăm - Luận Quẻ Tâm Linh">
-  <meta property="twitter:description" content="Trải nghiệm gieo keo âm dương, lắc ống xăm và luận giải quẻ xăm Thánh Mẫu truyền thống cát tường.">
-  <meta property="twitter:image" content="https://hoangtau996-collab.github.io/xin-xam-luan-que/seo_cover.jpg">
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Xin Xăm - Luận Quẻ Tâm Linh">
+  <meta name="twitter:description" content="Trải nghiệm gieo keo âm dương, lắc ống xăm và luận giải quẻ xăm Thánh Mẫu truyền thống cát tường.">
+  <meta name="twitter:image" content="https://hoangtau996-collab.github.io/xin-xam-luan-que/seo_cover.jpg">
+  <meta name="twitter:image:alt" content="Xin Xăm - Luận Quẻ Tâm Linh">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,17 +63,17 @@
   <div class="container">
     <!-- App Header -->
     <header class="app-header">
-      <h1 class="logo-title">Xin Xăm Luận Quẻ</h1>
-      <p class="logo-subtitle">Chân Thành Sở Cầu - Tất Hữu Linh Ứng</p>
+      <h1 class="logo-title" data-i18n="header.title">Xin Xăm Luận Quẻ</h1>
+      <p class="logo-subtitle" data-i18n="header.subtitle">Chân Thành Sở Cầu - Tất Hữu Linh Ứng</p>
     </header>
 
     <!-- App Navigation Tabs -->
     <nav class="app-navigation">
       <button id="tab-fortune" class="nav-tab active" onclick="switchTab('fortune')">
-        <span>⛩️ Xin Xăm Gieo Quẻ</span>
+        <span data-i18n="nav.fortune">⛩️ Xin Xăm Gieo Quẻ</span>
       </button>
       <button id="tab-meditation" class="nav-tab" onclick="switchTab('meditation')">
-        <span>🌸 Tịnh Tâm Gõ Mõ</span>
+        <span data-i18n="nav.meditation">🌸 Tịnh Tâm Gõ Mõ</span>
       </button>
     </nav>
 
@@ -73,32 +82,32 @@
       <!-- SECTION 1: XIN KEO ÂM DƯƠNG -->
       <section id="sec-keo" class="card active">
       <div class="card-body">
-        <div class="step-indicator">Bước 1: Xin Keo Âm Dương</div>
-        <h2 class="section-title">Gieo Keo Định Mệnh</h2>
+        <div class="step-indicator" data-i18n="step1.indicator">Bước 1: Xin Keo Âm Dương</div>
+        <h2 class="section-title" data-i18n="step1.title">Gieo Keo Định Mệnh</h2>
         
-        <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px;">
+        <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px;" data-i18n="step1.desc_html" data-i18n-html>
           Trước khi gieo, xin hãy nhắm mắt tĩnh tâm, <strong>thành kính khấn nguyện lời khấn trong tâm</strong> (họ tên, tuổi, việc cần cầu hỏi). 
           Sau đó chọn chế độ luận giải và nhấn nút <strong>Gieo Keo</strong> (Cần gieo được 1 Sấp - 1 Ngửa, tối đa 3 lần).
         </p>
 
         <!-- Dynamic Mode Selector inside Step 1 -->
         <div class="form-group" style="margin-bottom: 25px;">
-          <label style="text-align: center; display: block; font-size: 1.05rem; margin-bottom: 10px; color: var(--lotus-pink-light);">Hình thức luận giải quẻ:</label>
+          <label style="text-align: center; display: block; font-size: 1.05rem; margin-bottom: 10px; color: var(--lotus-pink-light);" data-i18n="step1.mode_label">Hình thức luận giải quẻ:</label>
           <div class="mode-selector">
             <label class="mode-option">
               <input type="radio" name="interpret-mode" value="full" checked>
               <div class="mode-card">
                 <span class="mode-icon">📜</span>
-                <span class="mode-title">Luận Giải Trọn Vẹn</span>
-                <span class="mode-desc">Thơ thần, dịch nghĩa và các khía cạnh cuộc sống.</span>
+                <span class="mode-title" data-i18n="step1.mode_full_title">Luận Giải Trọn Vẹn</span>
+                <span class="mode-desc" data-i18n="step1.mode_full_desc">Thơ thần, dịch nghĩa và các khía cạnh cuộc sống.</span>
               </div>
             </label>
             <label class="mode-option">
               <input type="radio" name="interpret-mode" value="instant" id="radio-instant">
               <div class="mode-card">
                 <span class="mode-icon">⚡</span>
-                <span class="mode-title">Lời Khuyên Tức Thì</span>
-                <span class="mode-desc">Loại quẻ tốt/xấu kèm lời chỉ dẫn ngắn gọn.</span>
+                <span class="mode-title" data-i18n="step1.mode_instant_title">Lời Khuyên Tức Thì</span>
+                <span class="mode-desc" data-i18n="step1.mode_instant_desc">Loại quẻ tốt/xấu kèm lời chỉ dẫn ngắn gọn.</span>
               </div>
             </label>
           </div>
@@ -106,10 +115,10 @@
 
         <!-- Block Countdown Timer -->
         <div id="block-timer-container" class="alert alert-danger hidden">
-          <p class="alert-title">Chưa Thể Xin Quẻ</p>
-          <p>Bạn đã gieo keo bất thành cả 3 lần. Xin hãy thành tâm đợi thời cơ khác.</p>
+          <p class="alert-title" data-i18n="step1.block_title">Chưa Thể Xin Quẻ</p>
+          <p data-i18n="step1.block_desc">Bạn đã gieo keo bất thành cả 3 lần. Xin hãy thành tâm đợi thời cơ khác.</p>
           <div id="countdown" class="timer-countdown">30:00</div>
-          <p class="timer-sub">Quay lại sau 30 phút để khấn nguyện lại.</p>
+          <p class="timer-sub" data-i18n="step1.block_comeback">Quay lại sau 30 phút để khấn nguyện lại.</p>
         </div>
 
         <div id="keo-playground" class="keo-playground">
@@ -117,14 +126,14 @@
           <div class="keo-container">
             <div id="keo-1" class="keo-block">
               <div class="keo-inner">
-                <div class="keo-face keo-ngua"><span>Ngửa (Dương)</span></div>
-                <div class="keo-face keo-sap"><span>Sấp (Âm)</span></div>
+                <div class="keo-face keo-ngua"><span data-i18n="step1.keo_ngua">Ngửa (Dương)</span></div>
+                <div class="keo-face keo-sap"><span data-i18n="step1.keo_sap">Sấp (Âm)</span></div>
               </div>
             </div>
             <div id="keo-2" class="keo-block">
               <div class="keo-inner">
-                <div class="keo-face keo-ngua"><span>Ngửa (Dương)</span></div>
-                <div class="keo-face keo-sap"><span>Sấp (Âm)</span></div>
+                <div class="keo-face keo-ngua"><span data-i18n="step1.keo_ngua">Ngửa (Dương)</span></div>
+                <div class="keo-face keo-sap"><span data-i18n="step1.keo_sap">Sấp (Âm)</span></div>
               </div>
             </div>
           </div>
@@ -134,7 +143,7 @@
         </div>
 
         <!-- Toss Status Message -->
-        <div id="keo-result-msg" class="result-msg">Hãy nhấn "Gieo Keo" bên dưới.</div>
+        <div id="keo-result-msg" class="result-msg" data-i18n="step1.keo_default_msg">Hãy nhấn "Gieo Keo" bên dưới.</div>
 
         <!-- Attempt tracker -->
         <div class="attempts-container">
@@ -146,11 +155,11 @@
         <!-- Action Button -->
         <div class="action-buttons">
           <button id="btn-toss" class="btn btn-gold ripple" onclick="tossKeo()">
-            <span>Gieo Keo Âm Dương</span>
+            <span data-i18n="step1.btn_toss">Gieo Keo Âm Dương</span>
             <div class="btn-shine"></div>
           </button>
           <button id="btn-next-step" class="btn btn-green ripple hidden" onclick="goToShake()">
-            <span>Tiến Tới Lắc Xăm</span>
+            <span data-i18n="step1.btn_next">Tiến Tới Lắc Xăm</span>
           </button>
         </div>
       </div>
@@ -159,15 +168,15 @@
     <!-- SECTION 2: LẮC ỐNG XĂM -->
     <section id="sec-shake" class="card">
       <div class="card-body">
-        <div class="step-indicator">Bước 2: Lắc Ống Xăm</div>
-        <h2 class="section-title">Thành Tâm Lắc Ống Xăm</h2>
-        <p class="step-desc">
+        <div class="step-indicator" data-i18n="step2.indicator">Bước 2: Lắc Ống Xăm</div>
+        <h2 class="section-title" data-i18n="step2.title">Thành Tâm Lắc Ống Xăm</h2>
+        <p class="step-desc" data-i18n="step2.desc">
           Nhấp chuột hoặc chạm liên tục vào ống xăm **trên 10 lần** để năng lượng tâm linh tích tụ và thẻ xăm xuất hiện.
         </p>
 
         <!-- Shake Meter / Progress -->
         <div class="shake-meter-container">
-          <div class="shake-meter-label">Thành tâm lắc: <span id="shake-count">0</span> / 11 lần</div>
+          <div class="shake-meter-label"><span data-i18n="step2.shake_label">Thành tâm lắc:</span> <span id="shake-count">0</span> / 11 <span data-i18n="step2.shake_unit">lần</span></div>
           <div class="shake-progress-bar">
             <div id="shake-progress" class="shake-progress-fill" style="width: 0%"></div>
           </div>
@@ -192,7 +201,7 @@
             <!-- The tube body itself -->
             <div class="tube-body">
               <div class="tube-texture"></div>
-              <div class="tube-label">Xăm Linh Quẻ</div>
+              <div class="tube-label" data-i18n="step2.tube_label">Xăm Linh Quẻ</div>
             </div>
           </div>
           
@@ -204,15 +213,15 @@
           </div>
         </div>
 
-        <div id="shake-instruction" class="shake-instruction-pulse">Nhấp/Chạm vào ống xăm hoặc lắc điện thoại để bắt đầu lắc!</div>
-        <div class="shake-tip-insecure" style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 10px; opacity: 0.85; line-height: 1.4;">
+        <div id="shake-instruction" class="shake-instruction-pulse" data-i18n="step2.instruction">Nhấp/Chạm vào ống xăm hoặc lắc điện thoại để bắt đầu lắc!</div>
+        <div class="shake-tip-insecure" style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 10px; opacity: 0.85; line-height: 1.4;" data-i18n="step2.https_note">
           (Lưu ý: Tính năng lắc thiết bị yêu cầu giao thức bảo mật HTTPS khi chạy trên trình duyệt di động)
         </div>
 
         <!-- Action Button (Hidden until stick falls out) -->
         <div class="action-buttons">
           <button id="btn-reveal" class="btn btn-gold ripple hidden" onclick="revealFortune()">
-            <span>Xem Luận Giải Chi Tiết</span>
+            <span data-i18n="step2.btn_reveal">Xem Luận Giải Chi Tiết</span>
             <div class="btn-shine"></div>
           </button>
         </div>
@@ -222,8 +231,8 @@
     <!-- SECTION 3: LUẬN GIẢI QUẺ XĂM & LƯU ẢNH -->
     <section id="sec-result" class="card">
       <div class="card-body">
-        <div class="step-indicator">Bước 3: Nhận Luận Giải</div>
-        <h2 class="section-title">Thẻ Xăm Của Bạn</h2>
+        <div class="step-indicator" data-i18n="step3.indicator">Bước 3: Nhận Luận Giải</div>
+        <h2 class="section-title" data-i18n="step3.title">Thẻ Xăm Của Bạn</h2>
 
         <!-- The beautiful scroll layout -->
         <div class="scroll-wrapper">
@@ -236,12 +245,12 @@
               <div class="divider-gold"></div>
               
               <div class="prayer-info">
-                Ý nguyện: <strong id="scroll-user-wish">Cầu bình an...</strong>
+                <span data-i18n="step3.wish_label">Ý nguyện:</span> <strong id="scroll-user-wish">Cầu bình an...</strong>
               </div>
 
               <!-- LỜI KHUYÊN TỨC THÌ (Instant Mode) -->
               <div id="scroll-instant-sec" class="scroll-section hidden" style="width: 100%;">
-                <h5>Lời Khuyên Tức Thì</h5>
+                <h5 data-i18n="step3.instant_title">Lời Khuyên Tức Thì</h5>
                 <div class="instant-advice-box">
                   <div id="instant-verdict" class="instant-verdict-text">--</div>
                   <p id="instant-note" class="instant-note-text">--</p>
@@ -251,24 +260,24 @@
               <!-- LUẬN GIẢI TRỌN VẸN (Full Mode) -->
               <div id="scroll-full-sections" style="width: 100%;">
                 <div class="scroll-section">
-                  <h5>Thơ Thần (Chữ Hán Việt)</h5>
+                  <h5 data-i18n="step3.poem_title">Thơ Thần (Chữ Hán Việt)</h5>
                   <p id="scroll-poem" class="poem-text">--</p>
                 </div>
 
                 <div class="scroll-section">
-                  <h5>Dịch Nghĩa</h5>
+                  <h5 data-i18n="step3.translation_title">Dịch Nghĩa</h5>
                   <p id="scroll-translation" class="poem-text text-italic">--</p>
                 </div>
 
                 <div class="scroll-section">
-                  <h5>Ý Nghĩa Chung</h5>
+                  <h5 data-i18n="step3.meaning_title">Ý Nghĩa Chung</h5>
                   <p id="scroll-meaning">--</p>
                 </div>
 
                 <div class="divider-gold"></div>
                 
                 <div class="scroll-section">
-                  <h5>Luận Giải Chi Tiết</h5>
+                  <h5 data-i18n="step3.details_title">Luận Giải Chi Tiết</h5>
                   <table class="detail-table">
                     <tbody id="scroll-details-tbody">
                       <!-- Dynamic details rows -->
@@ -280,8 +289,8 @@
               <!-- Decorative Stamped Seal -->
               <div class="seal-container">
                 <div class="seal">
-                  <span>Linh Quẻ</span>
-                  <span>Cát Tường</span>
+                  <span data-i18n="step3.seal_1">Linh Quẻ</span>
+                  <span data-i18n="step3.seal_2">Cát Tường</span>
                 </div>
               </div>
             </div>
@@ -292,14 +301,14 @@
         <!-- Action Buttons -->
         <div class="action-buttons-flex">
           <button id="btn-show-details" class="btn btn-green ripple" onclick="openDetailsModal()">
-            <span>Xem Bảng Luận Giải</span>
+            <span data-i18n="step3.btn_details">Xem Bảng Luận Giải</span>
           </button>
           <button class="btn btn-gold ripple" onclick="saveAsImage()">
-            <span>Lưu Ảnh Quẻ Xăm</span>
+            <span data-i18n="step3.btn_save">Lưu Ảnh Quẻ Xăm</span>
             <div class="btn-shine"></div>
           </button>
           <button class="btn btn-red ripple" onclick="resetApp()">
-            <span>Gieo Quẻ Mới</span>
+            <span data-i18n="step3.btn_new">Gieo Quẻ Mới</span>
           </button>
         </div>
       </div>
@@ -310,9 +319,9 @@
     <div id="meditation-app-view" class="hidden">
       <section class="card active">
         <div class="card-body">
-          <div class="step-indicator">Không gian tịnh tâm</div>
-          <h2 class="section-title">Thắp Hương Gõ Mõ</h2>
-          <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px; text-align: center;">
+          <div class="step-indicator" data-i18n="meditation.indicator">Không gian tịnh tâm</div>
+          <h2 class="section-title" data-i18n="meditation.title">Thắp Hương Gõ Mõ</h2>
+          <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px; text-align: center;" data-i18n="meditation.desc">
             Thắp một nén nhang, dâng hoa tươi lên ban thờ và gõ mõ tụng kinh giúp tâm hồn thanh tịnh, tập trung và tích lũy công đức cát lành.
           </p>
           
@@ -323,7 +332,7 @@
               <!-- Left flower vase -->
               <div class="altar-slot">
                 <img id="altar-flower-left" src="altar_lotus.jpg" class="lotus-offering" alt="Hoa Sen Dâng Phật">
-                <div class="offering-label">Dâng Hoa</div>
+                <div class="offering-label" data-i18n="meditation.flower_label">Dâng Hoa</div>
               </div>
               
               <!-- Center incense burner -->
@@ -351,7 +360,7 @@
               <!-- Right flower vase -->
               <div class="altar-slot">
                 <img id="altar-flower-right" src="altar_lotus.jpg" class="lotus-offering" alt="Hoa Sen Dâng Phật">
-                <div class="offering-label">Dâng Hoa</div>
+                <div class="offering-label" data-i18n="meditation.flower_label">Dâng Hoa</div>
               </div>
             </div>
             
@@ -363,43 +372,43 @@
               <!-- Custom Time Slider (2 to 60 minutes) -->
               <div class="slider-container" style="width: 100%; text-align: center; margin-bottom: 5px;">
                 <div style="font-size: 0.9rem; color: var(--text-light); font-weight: 600; margin-bottom: 8px;">
-                  Thời gian thắp hương: <span id="incense-slider-val" style="color: var(--lotus-pink-light); font-size: 1.05rem; font-weight: bold;">2</span> phút
+                  <span data-i18n="meditation.time_label">Thời gian thắp hương:</span> <span id="incense-slider-val" style="color: var(--lotus-pink-light); font-size: 1.05rem; font-weight: bold;">2</span> <span data-i18n="meditation.time_unit">phút</span>
                 </div>
                 <input type="range" id="incense-time-slider" min="2" max="60" value="2" class="custom-slider" oninput="handleSliderChange(this.value)">
               </div>
               
               <!-- Ambient Music Selection -->
               <div class="music-selector-container" style="width: 100%; text-align: center; margin-top: 5px; margin-bottom: 5px;">
-                <label for="music-select" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Chọn nhạc nền tịnh tâm:</label>
+                <label for="music-select" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;" data-i18n="meditation.music_label">Chọn nhạc nền tịnh tâm:</label>
                 <select id="music-select" class="custom-select" onchange="handleMusicSelectChange(this.value)">
-                  <option value="meditation">🧘 Thiền Định Tịnh Tâm</option>
-                  <option value="singing-bowl">🔔 Chuông Xoay Tây Tạng</option>
-                  <option value="melodious">🎵 Nhạc Sáo Trúc Du Dương</option>
-                  <option value="none">🔇 Tắt Nhạc Nền</option>
+                  <option value="meditation" data-i18n="meditation.music_meditation">🧘 Thiền Định Tịnh Tâm</option>
+                  <option value="singing-bowl" data-i18n="meditation.music_bowl">🔔 Chuông Xoay Tây Tạng</option>
+                  <option value="melodious" data-i18n="meditation.music_flute">🎵 Nhạc Sáo Trúc Du Dương</option>
+                  <option value="none" data-i18n="meditation.music_none">🔇 Tắt Nhạc Nền</option>
                 </select>
               </div>
               
               <div class="action-buttons-flex" style="margin-top: 12px; width: 100%;">
                 <button id="btn-toggle-incense" class="btn btn-green ripple" onclick="toggleIncense()">
-                  <span>Thắp Hương Nhang</span>
+                  <span data-i18n="meditation.btn_light">Thắp Hương Nhang</span>
                 </button>
                 <button id="btn-toggle-flowers" class="btn btn-gold ripple" onclick="toggleFlowerOffering()">
-                  <span>Dâng Hoa Sen</span>
+                  <span data-i18n="meditation.btn_flower">Dâng Hoa Sen</span>
                 </button>
               </div>
             </div>
             
             <!-- Mõ Gỗ Section -->
             <div class="mo-section">
-              <h3 style="font-family: var(--font-serif); color: var(--lotus-pink-light); text-align: center; margin-top: 16px; font-size: 1.3rem; letter-spacing: 0.5px;">🪘 Gõ Mõ Tích Đức</h3>
-              <p style="font-size: 0.82rem; color: var(--text-muted); text-align: center; margin-bottom: 10px;">(Nhấp vào mõ gỗ để tụng kinh tích đức)</p>
+              <h3 style="font-family: var(--font-serif); color: var(--lotus-pink-light); text-align: center; margin-top: 16px; font-size: 1.3rem; letter-spacing: 0.5px;" data-i18n="meditation.mo_title">🪘 Gõ Mõ Tích Đức</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); text-align: center; margin-bottom: 10px;" data-i18n="meditation.mo_desc">(Nhấp vào mõ gỗ để tụng kinh tích đức)</p>
               
               <div class="mo-container" onclick="handleMoClick(event)">
                 <img src="altar_mo.jpg" class="mo-image" alt="Mõ Gỗ">
               </div>
               
               <div style="font-family: var(--font-serif); font-size: 1.1rem; color: #fff; margin-top: 12px; text-align: center; letter-spacing: 0.5px;">
-                Công Đức Tích Lũy: <span id="mo-counter" style="color: var(--lotus-pink-light); font-weight: bold; font-size: 1.25rem;">0</span>
+                <span data-i18n="meditation.merit_label">Công Đức Tích Lũy:</span> <span id="mo-counter" style="color: var(--lotus-pink-light); font-weight: bold; font-size: 1.25rem;">0</span>
               </div>
             </div>
             
@@ -410,9 +419,9 @@
 
     <!-- App Footer with visitor counter -->
     <footer class="app-footer" style="margin-top: 35px; margin-bottom: 10px; text-align: center; font-size: 0.85rem; color: var(--text-muted); opacity: 0.8;">
-      <p>© 2026 Xăm Linh Quẻ Thánh Mẫu - Vạn sự tùy duyên</p>
+      <p data-i18n="footer.copyright">© 2026 Xăm Linh Quẻ Thánh Mẫu - Vạn sự tùy duyên</p>
       <p style="margin-top: 6px; color: var(--lotus-pink-light); font-weight: 500;">
-        🌸 Số lượt ghé khấn: <span id="visit-counter" style="color: #fff; font-weight: bold;">199</span>
+        <span data-i18n="footer.visits">🌸 Số lượt ghé khấn:</span> <span id="visit-counter" style="color: #fff; font-weight: bold;">199</span>
       </p>
     </footer>
   </div>
@@ -429,7 +438,7 @@
   <div id="details-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeDetailsModal()">&times;</span>
-      <h3 class="modal-title">Bản Luận Giải Chi Tiết</h3>
+      <h3 class="modal-title" data-i18n="step3.modal_title">Bản Luận Giải Chi Tiết</h3>
       <div id="modal-details-content" class="modal-body-content">
         <!-- Render detail fields here nicely -->
       </div>
@@ -440,14 +449,23 @@
   <canvas id="export-canvas" width="800" height="1200" style="position: absolute; left: -9999px; visibility: hidden;"></canvas>
 
   <!-- Sound Toggle Button -->
+  <!-- Language Toggle Button -->
+  <div class="lang-control" onclick="toggleLang()">
+    <button id="btn-lang" class="btn-round" title="Switch Language">
+      <span class="icon-lang">🌐</span>
+      <span id="lang-label" class="lang-label">VI</span>
+    </button>
+  </div>
+
   <div class="sound-control" onclick="toggleSound()">
-    <button id="btn-sound" class="btn-round" title="Bật/Tắt âm thanh">
+    <button id="btn-sound" class="btn-round" data-i18n-title="sound.title" title="Bật/Tắt âm thanh">
       <span class="icon-sound">🔊</span>
     </button>
   </div>
 
   <!-- Scripts -->
-  <script src="que_data.js?v=7"></script>
-  <script src="app.js?v=7"></script>
+  <script src="i18n.js?v=1"></script>
+  <script src="que_data.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
