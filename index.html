@@ -72,6 +72,9 @@
       <button id="tab-fortune" class="nav-tab active" onclick="switchTab('fortune')">
         <span data-i18n="nav.fortune">⛩️ Xin Xăm Gieo Quẻ</span>
       </button>
+      <button id="tab-kinhdich" class="nav-tab" onclick="switchTab('kinhdich')">
+        <span data-i18n="nav.kinhdich">🔮 Gieo Quẻ Kinh Dịch</span>
+      </button>
       <button id="tab-meditation" class="nav-tab" onclick="switchTab('meditation')">
         <span data-i18n="nav.meditation">🌸 Tịnh Tâm Gõ Mõ</span>
       </button>
@@ -315,6 +318,184 @@
     </section>
     </div> <!-- /fortune-app-view -->
 
+    <!-- I Ching / Kinh Dịch View (Hidden by default) -->
+    <div id="kinhdich-app-view" class="hidden">
+      <!-- SECTION 1: PREPARATION -->
+      <section id="sec-kd-prep" class="card active">
+        <div class="card-body">
+          <div class="step-indicator" data-i18n="kinhdich.indicator_step1">Kinh Dịch Linh Ứng</div>
+          <h2 class="section-title" data-i18n="kinhdich.title">Gieo Quẻ Kinh Dịch</h2>
+          <p class="step-desc" style="font-size: 1.02rem; color: var(--text-light); font-weight: 500; margin-bottom: 22px; text-align: center;" data-i18n="kinhdich.desc">
+            Chu Dịch thần diệu có thể chỉ dẫn cho bạn mọi nghi ngờ trong cuộc sống. Hãy nhắm mắt, tĩnh tâm và tập trung nghĩ về câu hỏi của bạn.
+          </p>
+          
+          <div class="wish-input-container" style="max-width: 400px; margin: 0 auto 24px;">
+            <label style="display: block; font-size: 1.05rem; margin-bottom: 8px; color: var(--lotus-pink-light); font-weight: 600;" data-i18n="kinhdich.question_label">Câu hỏi hoặc sự việc cần chiêm bốc:</label>
+            <input type="text" id="kd-question" class="custom-input" placeholder="Ví dụ: Công danh sự nghiệp năm nay thế nào..." style="width: 100%;" data-i18n-placeholder="kinhdich.question_placeholder">
+          </div>
+          
+          <div class="btn-group-center">
+            <button class="btn btn-red ripple" onclick="startKinhDichDivination()">
+              <span data-i18n="kinhdich.btn_start">Bắt Đầu Gieo Quẻ</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: CASTING SCREEN -->
+      <section id="sec-kd-cast" class="card hidden">
+        <div class="card-body">
+          <div class="step-indicator" data-i18n="kinhdich.indicator_step2">Tiến trình gieo quẻ</div>
+          <h2 class="section-title" data-i18n="kinhdich.cast_title">Thành Tâm Gieo 3 Đồng Xu</h2>
+          
+          <p class="step-desc" style="font-size: 1rem; color: var(--text-light); text-align: center; margin-bottom: 20px;" data-i18n="kinhdich.cast_desc">
+            Nhấp vào đĩa hoặc bấm nút bên dưới để gieo 3 đồng xu. Bạn sẽ gieo tổng cộng 6 lần để dựng nên 6 hào (từ dưới lên trên).
+          </p>
+          
+          <div class="kd-cast-container">
+            <!-- Left side: Coins shaking plate -->
+            <div class="coins-plate-wrapper">
+              <div id="coins-plate" class="coins-plate" onclick="shakeCoins()">
+                <div class="plate-inner"></div>
+                <div id="coin-1" class="ancient-coin">
+                  <div class="coin-face coin-front"><div>乾</div></div>
+                  <div class="coin-face coin-back"><div>坤</div></div>
+                </div>
+                <div id="coin-2" class="ancient-coin">
+                  <div class="coin-face coin-front"><div>乾</div></div>
+                  <div class="coin-face coin-back"><div>坤</div></div>
+                </div>
+                <div id="coin-3" class="ancient-coin">
+                  <div class="coin-face coin-front"><div>乾</div></div>
+                  <div class="coin-face coin-back"><div>坤</div></div>
+                </div>
+              </div>
+              
+              <div class="cast-progress-text" style="font-size: 1.1rem; color: var(--lotus-pink-light); font-weight: 600; margin-top: 15px; text-align: center;">
+                <span data-i18n="kinhdich.step_label">Lần gieo:</span> <span id="kd-cast-step">0</span> / 6
+              </div>
+              
+              <div id="kd-coins-result" class="kd-coins-result-msg" data-i18n="kinhdich.coins_init">Nhấn gieo để lắc xu</div>
+            </div>
+            
+            <!-- Right side: Hexagram builder -->
+            <div class="hexagram-visual-builder">
+              <div class="hexagram-lines-stack" id="kd-hexagram-stack">
+                <div class="kd-line-slot" id="kd-slot-6"><span class="line-label-side" data-i18n="kinhdich.hao_6">Hào 6</span><div class="hao-placeholder"></div></div>
+                <div class="kd-line-slot" id="kd-slot-5"><span class="line-label-side" data-i18n="kinhdich.hao_5">Hào 5</span><div class="hao-placeholder"></div></div>
+                <div class="kd-line-slot" id="kd-slot-4"><span class="line-label-side" data-i18n="kinhdich.hao_4">Hào 4</span><div class="hao-placeholder"></div></div>
+                <div class="kd-line-slot" id="kd-slot-3"><span class="line-label-side" data-i18n="kinhdich.hao_3">Hào 3</span><div class="hao-placeholder"></div></div>
+                <div class="kd-line-slot" id="kd-slot-2"><span class="line-label-side" data-i18n="kinhdich.hao_2">Hào 2</span><div class="hao-placeholder"></div></div>
+                <div class="kd-line-slot" id="kd-slot-1"><span class="line-label-side" data-i18n="kinhdich.hao_1">Hào 1</span><div class="hao-placeholder"></div></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="btn-group-center" style="margin-top: 25px;">
+            <button id="btn-shake-coins" class="btn btn-red ripple" onclick="shakeCoins()">
+              <span id="btn-shake-text" data-i18n="kinhdich.btn_shake">Gieo Hào 1</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: RESULT VIEW -->
+      <section id="sec-kd-result" class="card hidden">
+        <div class="card-body">
+          <div class="step-indicator" data-i18n="kinhdich.indicator_step3">Ý nghĩa quẻ dịch</div>
+          <h2 class="section-title" data-i18n="kinhdich.result_title">Kết Quả Chiêm Bốc</h2>
+          
+          <div class="kd-result-header" style="text-align: center; margin-bottom: 20px;">
+            <p style="font-size: 1.05rem; color: var(--text-light); margin-bottom: 6px;">
+              <span data-i18n="kinhdich.result_question">Câu hỏi của bạn:</span> <strong id="kd-result-question-val" style="color: var(--gold-light);">...</strong>
+            </p>
+          </div>
+
+          <!-- Dual hexagrams container -->
+          <div class="kd-hexagrams-container">
+            <!-- Primary Hexagram -->
+            <div class="kd-hexagram-column">
+              <h4 class="kd-hexagram-role" data-i18n="kinhdich.primary_role">Quẻ Chủ (Hiện Tại)</h4>
+              <div class="hexagram-lines-draw" id="kd-primary-draw"></div>
+              <h3 class="kd-hexagram-name" id="kd-primary-name">Quẻ Số --: --</h3>
+              <span class="badge auspice-badge" id="kd-primary-auspice">--</span>
+            </div>
+            
+            <!-- Arrow if changing lines exist -->
+            <div class="kd-hexagram-arrow hidden" id="kd-hexagram-arrow">
+              <span class="arrow-icon">➔</span>
+              <span class="arrow-text" data-i18n="kinhdich.changing_text">Biến</span>
+            </div>
+            
+            <!-- Secondary Hexagram -->
+            <div class="kd-hexagram-column hidden" id="kd-secondary-column">
+              <h4 class="kd-hexagram-role" data-i18n="kinhdich.secondary_role">Quẻ Biến (Tương Lai)</h4>
+              <div class="hexagram-lines-draw" id="kd-secondary-draw"></div>
+              <h3 class="kd-hexagram-name" id="kd-secondary-name">Quẻ Số --: --</h3>
+              <span class="badge auspice-badge" id="kd-secondary-auspice">--</span>
+            </div>
+          </div>
+
+          <!-- Hexagram meanings details tabs/panels -->
+          <div class="kd-meaning-box card-inner" style="margin-top: 25px;">
+            <h4 class="kd-interpretation-title" id="kd-interpretation-title" style="color: var(--gold-light); font-family: var(--font-title); border-bottom: 1px solid var(--lotus-pink-dark); padding-bottom: 8px; margin-bottom: 12px;">Đoán Từ & Tượng Quẻ</h4>
+            <p class="kd-meaning-desc" id="kd-result-desc" style="line-height: 1.6; color: var(--text-light); margin-bottom: 15px; font-style: italic;"></p>
+            <p class="kd-meaning-general" id="kd-result-general" style="line-height: 1.6; color: var(--text-light); font-size: 1.02rem; margin-bottom: 20px;"></p>
+            
+            <!-- Details Categories -->
+            <div class="que-details-list">
+              <div class="detail-item">
+                <span class="detail-icon">💼</span>
+                <div class="detail-content">
+                  <strong data-i18n="kinhdich.cat_career">Sự nghiệp & Công danh</strong>
+                  <p id="kd-detail-career">--</p>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon">❤️</span>
+                <div class="detail-content">
+                  <strong data-i18n="kinhdich.cat_love">Tình duyên & Gia đạo</strong>
+                  <p id="kd-detail-love">--</p>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon">💰</span>
+                <div class="detail-content">
+                  <strong data-i18n="kinhdich.cat_wealth">Tài lộc & Tiền bạc</strong>
+                  <p id="kd-detail-wealth">--</p>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon">🏥</span>
+                <div class="detail-content">
+                  <strong data-i18n="kinhdich.cat_health">Sức khỏe & Sinh lực</strong>
+                  <p id="kd-detail-health">--</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Changing Lines Explanations -->
+          <div id="kd-changing-lines-box" class="kd-changing-lines-box card-inner hidden" style="margin-top: 20px; background: rgba(255, 141, 161, 0.05); border: 1px dashed var(--lotus-pink-dark);">
+            <h4 style="color: var(--lotus-pink-light); margin-bottom: 10px; font-family: var(--font-title);" data-i18n="kinhdich.changing_lines_title">Luận Giải Chi Tiết Các Hào Động</h4>
+            <ul id="kd-changing-lines-list" style="margin: 0; padding-left: 20px; line-height: 1.6; color: var(--text-light);">
+              <!-- Changing line items injected here -->
+            </ul>
+          </div>
+
+          <div class="btn-group-center" style="margin-top: 30px; gap: 15px;">
+            <button class="btn btn-gold ripple" onclick="saveKinhDichAsImage()">
+              <span class="icon-btn">💾</span>
+              <span data-i18n="kinhdich.btn_save">Lưu Ảnh Quẻ Dịch</span>
+            </button>
+            <button class="btn btn-red ripple" onclick="resetKinhDich()">
+              <span data-i18n="kinhdich.btn_new">Gieo Quẻ Mới</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div> <!-- /kinhdich-app-view -->
+
     <!-- Meditation / Tịnh Tâm View (Hidden by default) -->
     <div id="meditation-app-view" class="hidden">
       <section class="card active">
@@ -447,6 +628,7 @@
 
   <!-- HIDDEN CANVAS FOR IMAGE GENERATION -->
   <canvas id="export-canvas" width="800" height="1200" style="position: absolute; left: -9999px; visibility: hidden;"></canvas>
+  <canvas id="export-kd-canvas" width="800" height="1200" style="position: absolute; left: -9999px; visibility: hidden;"></canvas>
 
   <!-- Sound Toggle Button -->
   <!-- Language Toggle Button -->
@@ -466,6 +648,7 @@
   <!-- Scripts -->
   <script src="i18n.js?v=1"></script>
   <script src="que_data.js?v=8"></script>
+  <script src="kinhdich_data.js?v=1"></script>
   <script src="app.js?v=8"></script>
 </body>
 </html>

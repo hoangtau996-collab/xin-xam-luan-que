@@ -9,6 +9,7 @@ const TRANSLATIONS = {
 
     // Navigation
     'nav.fortune': '⛩️ Xin Xăm Gieo Quẻ',
+    'nav.kinhdich': '🔮 Gieo Quẻ Kinh Dịch',
     'nav.meditation': '🌸 Tịnh Tâm Gõ Mõ',
 
     // Step 1: Gieo Keo
@@ -141,7 +142,47 @@ const TRANSLATIONS = {
     'detail.wealth': 'Cầu tài',
     'detail.health': 'Tật bệnh',
     'detail.marriage': 'Hôn nhân',
-    'detail.travel': 'Xuất hành'
+    'detail.travel': 'Xuất hành',
+
+    // Kinh Dịch Divination
+    'kinhdich.indicator_step1': 'Kinh Dịch Linh Ứng',
+    'kinhdich.title': 'Gieo Quẻ Kinh Dịch',
+    'kinhdich.desc': 'Chu Dịch thần diệu có thể chỉ dẫn cho bạn mọi nghi ngờ trong cuộc sống. Hãy nhắm mắt, tĩnh tâm và tập trung nghĩ về câu hỏi của bạn.',
+    'kinhdich.question_label': 'Câu hỏi hoặc sự việc cần chiêm bốc:',
+    'kinhdich.question_placeholder': 'Ví dụ: Công danh sự nghiệp năm nay thế nào...',
+    'kinhdich.btn_start': 'Bắt Đầu Gieo Quẻ',
+    'kinhdich.indicator_step2': 'Tiến trình gieo quẻ',
+    'kinhdich.cast_title': 'Thành Tâm Gieo 3 Đồng Xu',
+    'kinhdich.cast_desc': 'Nhấp vào đĩa hoặc bấm nút bên dưới để gieo 3 đồng xu. Bạn sẽ gieo tổng cộng 6 lần để dựng nên 6 hào (từ dưới lên trên).',
+    'kinhdich.step_label': 'Lần gieo:',
+    'kinhdich.coins_init': 'Nhấn gieo để lắc xu',
+    'kinhdich.hao_6': 'Hào 6',
+    'kinhdich.hao_5': 'Hào 5',
+    'kinhdich.hao_4': 'Hào 4',
+    'kinhdich.hao_3': 'Hào 3',
+    'kinhdich.hao_2': 'Hào 2',
+    'kinhdich.hao_1': 'Hào 1',
+    'kinhdich.btn_shake': 'Gieo Hào 1',
+    'kinhdich.indicator_step3': 'Ý nghĩa quẻ dịch',
+    'kinhdich.result_title': 'Kết Quả Chiêm Bốc',
+    'kinhdich.result_question': 'Câu hỏi của bạn:',
+    'kinhdich.primary_role': 'Quẻ Chủ (Hiện Tại)',
+    'kinhdich.secondary_role': 'Quẻ Biến (Tương Lai)',
+    'kinhdich.changing_text': 'Biến',
+    'kinhdich.changing_lines_title': 'Luận Giải Chi Tiết Các Hào Động',
+    'kinhdich.cat_career': 'Sự nghiệp & Công danh',
+    'kinhdich.cat_love': 'Tình duyên & Gia đạo',
+    'kinhdich.cat_wealth': 'Tài lộc & Tiền bạc',
+    'kinhdich.cat_health': 'Sức khỏe & Sinh lực',
+    'kinhdich.btn_save': 'Lưu Ảnh Quẻ Dịch',
+    'kinhdich.btn_new': 'Gieo Quẻ Mới',
+    'toast.kd_save_success': 'Đã lưu ảnh quẻ dịch thành công!',
+    'toast.kd_shaking': 'Đang lắc đồng xu...',
+    'toast.kd_complete': 'Đã lập xong quẻ dịch!',
+    'msg.kd_three_heads': '3 Ngửa (Lão Dương - Hào Dương Động ━━o━━)',
+    'msg.kd_three_tails': '3 Sấp (Lão Âm - Hào Âm Động ━━x━━)',
+    'msg.kd_two_heads_one_tail': '2 Ngửa, 1 Sấp (Thiếu Âm - Hào Âm ━━ ━━)',
+    'msg.kd_one_heads_two_tails': '1 Ngửa, 2 Sấp (Thiếu Dương - Hào Dương ━━━━━)'
   },
 
   en: {
@@ -151,7 +192,8 @@ const TRANSLATIONS = {
 
     // Navigation
     'nav.fortune': '⛩️ Draw Fortune Sticks',
-    'nav.meditation': '🌸 Meditation & Prayer',
+    'nav.kinhdich': '🔮 I Ching Divination',
+    'nav.meditation': '🌸 Temple Meditation',
 
     // Step 1: Cast Moon Blocks
     'step1.indicator': 'Step 1: Cast the Moon Blocks',
@@ -283,7 +325,47 @@ const TRANSLATIONS = {
     'detail.wealth': 'Wealth',
     'detail.health': 'Health',
     'detail.marriage': 'Marriage',
-    'detail.travel': 'Travel'
+    'detail.travel': 'Travel',
+
+    // I Ching Divination
+    'kinhdich.indicator_step1': 'I Ching Revelation',
+    'kinhdich.title': 'I Ching Divination',
+    'kinhdich.desc': 'The divine I Ching can guide you through any doubts in life. Close your eyes, calm your mind, and focus on your question.',
+    'kinhdich.question_label': 'Your question or matter to ask:',
+    'kinhdich.question_placeholder': 'Example: How will my career progress this year...',
+    'kinhdich.btn_start': 'Start Divination',
+    'kinhdich.indicator_step2': 'Casting Progress',
+    'kinhdich.cast_title': 'Sincerely Cast 3 Coins',
+    'kinhdich.cast_desc': 'Click on the plate or press the button below to toss 3 coins. You will cast 6 times to build the 6 lines (bottom to top).',
+    'kinhdich.step_label': 'Cast count:',
+    'kinhdich.coins_init': 'Press button to shake coins',
+    'kinhdich.hao_6': 'Line 6',
+    'kinhdich.hao_5': 'Line 5',
+    'kinhdich.hao_4': 'Line 4',
+    'kinhdich.hao_3': 'Line 3',
+    'kinhdich.hao_2': 'Line 2',
+    'kinhdich.hao_1': 'Line 1',
+    'kinhdich.btn_shake': 'Cast Line 1',
+    'kinhdich.indicator_step3': 'Hexagram Meaning',
+    'kinhdich.result_title': 'Divination Results',
+    'kinhdich.result_question': 'Your question:',
+    'kinhdich.primary_role': 'Primary Hexagram (Present)',
+    'kinhdich.secondary_role': 'Secondary Hexagram (Future)',
+    'kinhdich.changing_text': 'Changes to',
+    'kinhdich.changing_lines_title': 'Detailed Changing Lines Interpretation',
+    'kinhdich.cat_career': 'Plans & Career',
+    'kinhdich.cat_love': 'Love & Relationships',
+    'kinhdich.cat_wealth': 'Wealth & Finance',
+    'kinhdich.cat_health': 'Health & Vitality',
+    'kinhdich.btn_save': 'Save Hexagram Image',
+    'kinhdich.btn_new': 'New Divination',
+    'toast.kd_save_success': 'Hexagram image saved successfully!',
+    'toast.kd_shaking': 'Shaking coins...',
+    'toast.kd_complete': 'Hexagram casting complete!',
+    'msg.kd_three_heads': '3 Heads (Moving Yang ━━o━━)',
+    'msg.kd_three_tails': '3 Tails (Moving Yin ━━x━━)',
+    'msg.kd_two_heads_one_tail': '2 Heads, 1 Tail (Static Yin ━━ ━━)',
+    'msg.kd_one_heads_two_tails': '1 Head, 2 Tails (Static Yang ━━━━━)'
   }
 };
 

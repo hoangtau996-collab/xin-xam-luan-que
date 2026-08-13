@@ -1,6 +1,6 @@
 // State Management
 let currentStep = 'keo'; // keo, shake, result
-let activeTab = 'fortune'; // fortune, meditation
+let activeTab = 'fortune'; // fortune, kinhdich, meditation
 let interpretMode = 'full'; // full, instant
 let userWish = '';
 let attemptsCount = 0;
@@ -9,6 +9,13 @@ let shakeCount = 0;
 let selectedQue = null;
 let shakeLock = false;
 let tossLock = false;
+
+// Kinh Dịch Section State
+let kinhDichCasts = []; // Array of 6 numbers: 6, 7, 8, or 9
+let kinhDichQuestion = '';
+let isKinhDichShaking = false;
+let selectedKdQue = null;
+let selectedKdQueBien = null;
 
 // Meditation Section State
 let incenseDuration = 120; // Default 120s (2 minutes)
@@ -50,6 +57,22 @@ const fortuneAppView = document.getElementById('fortune-app-view');
 const meditationAppView = document.getElementById('meditation-app-view');
 const btnTabFortune = document.getElementById('tab-fortune');
 const btnTabMeditation = document.getElementById('tab-meditation');
+const btnTabKinhDich = document.getElementById('tab-kinhdich');
+const kinhdichAppView = document.getElementById('kinhdich-app-view');
+
+const secKdPrep = document.getElementById('sec-kd-prep');
+const secKdCast = document.getElementById('sec-kd-cast');
+const secKdResult = document.getElementById('sec-kd-result');
+const kdQuestionInput = document.getElementById('kd-question');
+const kdCastStepLabel = document.getElementById('kd-cast-step');
+const kdCoinsResultMsg = document.getElementById('kd-coins-result');
+const btnShakeCoins = document.getElementById('btn-shake-coins');
+const btnShakeText = document.getElementById('btn-shake-text');
+const kdHexagramStack = document.getElementById('kd-hexagram-stack');
+const coinsPlate = document.getElementById('coins-plate');
+const coin1 = document.getElementById('coin-1');
+const coin2 = document.getElementById('coin-2');
+const coin3 = document.getElementById('coin-3');
 
 const altarFlowerLeft = document.getElementById('altar-flower-left');
 const altarFlowerRight = document.getElementById('altar-flower-right');
@@ -1088,21 +1111,34 @@ function playSingingBowl() {
 function switchTab(tabId) {
   if (activeTab === tabId) return;
   
+  // Reset tab button states
+  btnTabFortune.classList.remove('active');
+  btnTabMeditation.classList.remove('active');
+  btnTabKinhDich.classList.remove('active');
+  
+  // Hide all views
+  fortuneAppView.classList.add('hidden');
+  meditationAppView.classList.add('hidden');
+  kinhdichAppView.classList.add('hidden');
+  
+  // Stop meditation music if active
+  if (activeTab === 'meditation' && typeof isMeditationPlaying !== 'undefined' && isMeditationPlaying) {
+    stopMeditationMusic();
+  }
+  
+  activeTab = tabId;
+  
   if (tabId === 'fortune') {
     btnTabFortune.classList.add('active');
-    btnTabMeditation.classList.remove('active');
     fortuneAppView.classList.remove('hidden');
-    meditationAppView.classList.add('hidden');
-    activeTab = 'fortune';
-  } else {
-    btnTabFortune.classList.remove('active');
+  } else if (tabId === 'kinhdich') {
+    btnTabKinhDich.classList.add('active');
+    kinhdichAppView.classList.remove('hidden');
+  } else if (tabId === 'meditation') {
     btnTabMeditation.classList.add('active');
-    fortuneAppView.classList.add('hidden');
     meditationAppView.classList.remove('hidden');
-    activeTab = 'meditation';
-    
     // Auto start ambient background music on enter if enabled
-    if (soundEnabled && !isMeditationPlaying) {
+    if (soundEnabled && typeof isMeditationPlaying !== 'undefined' && !isMeditationPlaying) {
       startMeditationMusic();
     }
   }
@@ -1386,11 +1422,604 @@ function playMelodiousNote() {
   }
 }
 
+// ==========================================================================
+// FEATURE: GIEO QUẺ KINH DỊCH (I CHING) LOGIC
+// ==========================================================================
+
+// Sound synthesizer: Coins clinking together
+function playCoinClink() {
+  if (!soundEnabled) return;
+  try {
+    initAudio();
+    if (!audioCtx) return;
+    
+    // Quick metallic clink: multiple high frequency nodes with fast decay
+    const playSingleClink = (delay, pitch, vol) => {
+      const now = audioCtx.currentTime + delay;
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(1400 * pitch, now);
+      
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(2100 * pitch, now);
+      
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08); // very fast decay
+      
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.1);
+      osc2.stop(now + 0.1);
+    };
+    
+    // Play 3 rapid clinks to sound like 3 coins colliding
+    playSingleClink(0, 1.0, 0.35);
+    playSingleClink(0.04, 1.25, 0.25);
+    playSingleClink(0.08, 0.85, 0.3);
+  } catch (e) {
+    console.error("Failed to play coin clink:", e);
+  }
+}
+
+// Transition from preparation screen to casting screen
+function startKinhDichDivination() {
+  const wish = kdQuestionInput.value.trim();
+  kinhDichQuestion = wish ? wish : (currentLang === 'vi' ? 'Cầu vạn sự hanh thông' : 'Pray for all to go smoothly');
+  
+  // Transition screens
+  secKdPrep.classList.add('hidden');
+  secKdCast.classList.remove('hidden');
+  secKdResult.classList.add('hidden');
+  
+  // Reset I Ching state
+  kinhDichCasts = [];
+  kdCastStepLabel.textContent = '0';
+  kdCoinsResultMsg.textContent = t('kinhdich.coins_init');
+  
+  // Reset Shake Button
+  btnShakeCoins.disabled = false;
+  btnShakeCoins.onclick = shakeCoins;
+  btnShakeText.textContent = t('kinhdich.btn_shake');
+  
+  // Reset visual lines slot stack to placeholders
+  for (let i = 1; i <= 6; i++) {
+    const slot = document.getElementById(`kd-slot-${i}`);
+    if (slot) {
+      const placeholder = slot.querySelector('.hao-placeholder') || document.createElement('div');
+      placeholder.className = 'hao-placeholder';
+      placeholder.innerHTML = '';
+      
+      const currentLabel = slot.querySelector('.line-label-side');
+      slot.innerHTML = '';
+      if (currentLabel) {
+        slot.appendChild(currentLabel);
+      } else {
+        const label = document.createElement('span');
+        label.className = 'line-label-side';
+        label.textContent = t(`kinhdich.hao_${i}`);
+        slot.appendChild(label);
+      }
+      slot.appendChild(placeholder);
+    }
+  }
+  
+  // Reset coins to default visual state
+  coin1.style.transform = 'translate3d(0, 0, 0) rotateY(0deg)';
+  coin2.style.transform = 'translate3d(0, 0, 0) rotateY(0deg)';
+  coin3.style.transform = 'translate3d(0, 0, 0) rotateY(0deg)';
+  coin1.style.left = '40px'; coin1.style.top = '75px';
+  coin2.style.left = '110px'; coin2.style.top = '50px';
+  coin3.style.left = '95px'; coin3.style.top = '110px';
+}
+
+// Simulate tossing 3 coins to build a hexagram line (1 of 6)
+function shakeCoins() {
+  if (isKinhDichShaking || kinhDichCasts.length >= 6) return;
+  isKinhDichShaking = true;
+  
+  showToast(t('toast.kd_shaking'));
+  
+  // Shake sound interval
+  let rattleInterval = setInterval(() => {
+    playCoinClink();
+  }, 100);
+  
+  coinsPlate.classList.add('plate-shaking');
+  
+  // Animate coins inside the bowl
+  const animateCoin = (coinEl) => {
+    const randX = Math.floor(Math.random() * 90) + 15; // Random position bounds
+    const randY = Math.floor(Math.random() * 90) + 15;
+    const spinsX = (Math.floor(Math.random() * 5) + 5) * 360; 
+    const spinsY = (Math.floor(Math.random() * 5) + 5) * 360;
+    
+    // 50% head (阳 - Yang), 50% tail (阴 - Yin)
+    const isHead = Math.random() < 0.5;
+    const finalRotY = spinsY + (isHead ? 0 : 180);
+    
+    coinEl.style.left = `${randX}px`;
+    coinEl.style.top = `${randY}px`;
+    coinEl.style.transform = `rotateX(${spinsX}deg) rotateY(${finalRotY}deg)`;
+    
+    return isHead;
+  };
+  
+  const coin1Head = animateCoin(coin1);
+  const coin2Head = animateCoin(coin2);
+  const coin3Head = animateCoin(coin3);
+  
+  setTimeout(() => {
+    clearInterval(rattleInterval);
+    coinsPlate.classList.remove('plate-shaking');
+    
+    // Count heads/tails
+    const headsCount = (coin1Head ? 1 : 0) + (coin2Head ? 1 : 0) + (coin3Head ? 1 : 0);
+    
+    // Determine Hào Value:
+    // 3 Tails (0 Heads) = 6: Moving Yin (Lão Âm)
+    // 2 Tails (1 Head)  = 7: Static Yang (Thiếu Dương)
+    // 1 Tail (2 Heads)  = 8: Static Yin (Thiếu Âm)
+    // 0 Tails (3 Heads) = 9: Moving Yang (Lão Dương)
+    let castValue = 8;
+    let resultKey = '';
+    if (headsCount === 0) {
+      castValue = 6;
+      resultKey = 'msg.kd_three_tails';
+    } else if (headsCount === 1) {
+      castValue = 7;
+      resultKey = 'msg.kd_one_heads_two_tails';
+    } else if (headsCount === 2) {
+      castValue = 8;
+      resultKey = 'msg.kd_two_heads_one_tail';
+    } else if (headsCount === 3) {
+      castValue = 9;
+      resultKey = 'msg.kd_three_heads';
+    }
+    
+    kinhDichCasts.push(castValue);
+    const step = kinhDichCasts.length;
+    kdCastStepLabel.textContent = step;
+    
+    // Display result message
+    kdCoinsResultMsg.textContent = `${t('kinhdich.step_label')} ${step}: ${t(resultKey)}`;
+    
+    // Draw the corresponding line vertically (from bottom to top)
+    const slot = document.getElementById(`kd-slot-${step}`);
+    if (slot) {
+      const lineEl = document.createElement('div');
+      if (castValue === 7) {
+        lineEl.className = 'hao-yang';
+      } else if (castValue === 8) {
+        lineEl.className = 'hao-yin';
+      } else if (castValue === 6) {
+        lineEl.className = 'hao-yin hao-moving-yin';
+      } else if (castValue === 9) {
+        lineEl.className = 'hao-yang hao-moving';
+      }
+      
+      const placeholder = slot.querySelector('.hao-placeholder');
+      if (placeholder) {
+        slot.replaceChild(lineEl, placeholder);
+      }
+    }
+    
+    // Confirmation sound
+    playWoodClack(0, 1.0, 0.7);
+    
+    // Check if finished 6 casts
+    if (step >= 6) {
+      btnShakeText.textContent = currentLang === 'vi' ? 'Xem Kết Quả Quẻ Dịch' : 'View Divination Results';
+      btnShakeCoins.onclick = showKinhDichResult;
+    } else {
+      btnShakeText.textContent = `${t('kinhdich.btn_shake').split(' ').slice(0, -1).join(' ')} ${step + 1}`;
+    }
+    
+    isKinhDichShaking = false;
+  }, 800);
+}
+
+// Compile binary lines and reveal results
+function showKinhDichResult() {
+  if (kinhDichCasts.length < 6) return;
+  
+  // Calculate primary hexagram binary string (0=Yin, 1=Yang)
+  const primaryBinary = kinhDichCasts.map(c => (c === 7 || c === 9) ? '1' : '0').join('');
+  
+  // Calculate secondary hexagram binary string (swap moving lines 6->1, 9->0)
+  const secondaryBinary = kinhDichCasts.map(c => {
+    if (c === 6) return '1';
+    if (c === 9) return '0';
+    return (c === 7) ? '1' : '0';
+  }).join('');
+  
+  const hasChangingLines = kinhDichCasts.some(c => c === 6 || c === 9);
+  
+  // Database lookup
+  selectedKdQue = KINHDICH_DATA[primaryBinary];
+  selectedKdQueBien = hasChangingLines ? KINHDICH_DATA[secondaryBinary] : null;
+  
+  if (!selectedKdQue) {
+    console.error("Hexagram binary not found:", primaryBinary);
+    return;
+  }
+  
+  // Play visual and audio chime
+  playSingingBowl();
+  showToast(t('toast.kd_complete'));
+  
+  // Inject details in DOM
+  document.getElementById('kd-result-question-val').textContent = kinhDichQuestion;
+  
+  // Render Primary Hexagram Column
+  document.getElementById('kd-primary-name').textContent = currentLang === 'vi' ? selectedKdQue.name : selectedKdQue.name_en;
+  const primaryAuspiceEl = document.getElementById('kd-primary-auspice');
+  primaryAuspiceEl.textContent = currentLang === 'vi' ? selectedKdQue.auspice : selectedKdQue.auspice_en;
+  primaryAuspiceEl.className = 'badge auspice-badge ' + getAuspiceClass(selectedKdQue.auspice);
+  
+  // Draw primary lines
+  const primaryDrawContainer = document.getElementById('kd-primary-draw');
+  primaryDrawContainer.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const val = kinhDichCasts[i];
+    const lineEl = document.createElement('div');
+    if (val === 7) {
+      lineEl.className = 'hao-yang';
+    } else if (val === 8) {
+      lineEl.className = 'hao-yin';
+    } else if (val === 6) {
+      lineEl.className = 'hao-yin hao-moving-yin';
+    } else if (val === 9) {
+      lineEl.className = 'hao-yang hao-moving';
+    }
+    primaryDrawContainer.appendChild(lineEl);
+  }
+  
+  // Render Secondary Hexagram Column
+  const secondaryColumn = document.getElementById('kd-secondary-column');
+  const arrowEl = document.getElementById('kd-hexagram-arrow');
+  const changingBox = document.getElementById('kd-changing-lines-box');
+  
+  if (hasChangingLines && selectedKdQueBien) {
+    secondaryColumn.classList.remove('hidden');
+    arrowEl.classList.remove('hidden');
+    changingBox.classList.remove('hidden');
+    
+    document.getElementById('kd-secondary-name').textContent = currentLang === 'vi' ? selectedKdQueBien.name : selectedKdQueBien.name_en;
+    const secondaryAuspiceEl = document.getElementById('kd-secondary-auspice');
+    secondaryAuspiceEl.textContent = currentLang === 'vi' ? selectedKdQueBien.auspice : selectedKdQueBien.auspice_en;
+    secondaryAuspiceEl.className = 'badge auspice-badge ' + getAuspiceClass(selectedKdQueBien.auspice);
+    
+    // Draw secondary lines
+    const secondaryDrawContainer = document.getElementById('kd-secondary-draw');
+    secondaryDrawContainer.innerHTML = '';
+    for (let i = 0; i < 6; i++) {
+      const bit = secondaryBinary[i];
+      const lineEl = document.createElement('div');
+      lineEl.className = (bit === '1') ? 'hao-yang' : 'hao-yin';
+      secondaryDrawContainer.appendChild(lineEl);
+    }
+    
+    // Inject changing lines explanations
+    const changingLinesList = document.getElementById('kd-changing-lines-list');
+    changingLinesList.innerHTML = '';
+    for (let i = 0; i < 6; i++) {
+      const val = kinhDichCasts[i];
+      if (val === 6 || val === 9) {
+        const li = document.createElement('li');
+        const haoText = currentLang === 'vi' ? selectedKdQue.haos[i+1] : selectedKdQue.haos_en[i+1];
+        li.textContent = haoText;
+        changingLinesList.appendChild(li);
+      }
+    }
+  } else {
+    secondaryColumn.classList.add('hidden');
+    arrowEl.classList.add('hidden');
+    changingBox.classList.add('hidden');
+  }
+  
+  // Render text descriptions
+  document.getElementById('kd-interpretation-title').textContent = currentLang === 'vi' ? 'Thoán Từ & Tượng Quẻ' : 'Thoan Tu & Hexagram Interpretation';
+  document.getElementById('kd-result-desc').textContent = currentLang === 'vi' ? selectedKdQue.desc : selectedKdQue.desc_en;
+  document.getElementById('kd-result-general').textContent = currentLang === 'vi' ? selectedKdQue.meaning : selectedKdQue.meaning_en;
+  
+  // Render categories
+  document.getElementById('kd-detail-career').textContent = currentLang === 'vi' ? selectedKdQue.career : selectedKdQue.career_en;
+  document.getElementById('kd-detail-love').textContent = currentLang === 'vi' ? selectedKdQue.love : selectedKdQue.love_en;
+  document.getElementById('kd-detail-wealth').textContent = currentLang === 'vi' ? selectedKdQue.wealth : selectedKdQue.wealth_en;
+  document.getElementById('kd-detail-health').textContent = currentLang === 'vi' ? selectedKdQue.health : selectedKdQue.health_en;
+  
+  secKdCast.classList.add('hidden');
+  secKdResult.classList.remove('hidden');
+}
+
+// Help assign color badges to auspice names
+function getAuspiceClass(auspice) {
+  if (auspice === "Đại Cát") return "badge-green";
+  if (auspice === "Cát" || auspice === "Trung Cát") return "badge-green-light";
+  if (auspice === "Bình") return "badge-yellow";
+  return "badge-red";
+}
+
+// Reset Kinh Dịch to initial screen state
+function resetKinhDich() {
+  kinhDichCasts = [];
+  selectedKdQue = null;
+  selectedKdQueBien = null;
+  kdQuestionInput.value = '';
+  
+  secKdPrep.classList.remove('hidden');
+  secKdCast.classList.add('hidden');
+  secKdResult.classList.add('hidden');
+  
+  btnShakeCoins.onclick = shakeCoins;
+  btnShakeText.textContent = t('kinhdich.btn_shake');
+}
+
+// Generate & Download the I Ching Card Image using Canvas
+function saveKinhDichAsImage() {
+  if (!selectedKdQue) return;
+  
+  const canvas = document.getElementById('export-kd-canvas');
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  
+  // 1. Background
+  ctx.fillStyle = '#f7fffb';
+  ctx.fillRect(0, 0, width, height);
+  
+  // Vintage texture
+  ctx.fillStyle = 'rgba(46, 139, 87, 0.03)';
+  for (let i = 0; i < 500; i++) {
+    const rx = Math.random() * width;
+    const ry = Math.random() * height;
+    const radius = Math.random() * 80 + 10;
+    ctx.beginPath();
+    ctx.arc(rx, ry, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  // 2. Borders
+  ctx.strokeStyle = '#163f2b';
+  ctx.lineWidth = 14;
+  ctx.strokeRect(7, 7, width - 14, height - 14);
+  
+  ctx.strokeStyle = '#ff8da1';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(20, 20, width - 40, height - 40);
+  
+  const cOffset = 30;
+  ctx.strokeRect(cOffset, cOffset, 20, 20);
+  ctx.strokeRect(width - cOffset - 20, cOffset, 20, 20);
+  ctx.strokeRect(cOffset, height - cOffset - 20, 20, 20);
+  ctx.strokeRect(width - cOffset - 20, height - cOffset - 20, 20, 20);
+  
+  // 3. Header Texts
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#c94a61';
+  ctx.font = 'bold 36px "Times New Roman", Georgia, serif';
+  ctx.fillText(currentLang === 'vi' ? 'CHIÊM BỐC CHU DỊCH' : 'I CHING ORACLE', width / 2, 85);
+  
+  ctx.fillStyle = '#163f2b';
+  ctx.font = 'italic 18px "Georgia", serif';
+  ctx.fillText(currentLang === 'vi' ? 'Vạn Sự Tùy Duyên - Thành Tâm Chiêm Nghiệm' : 'All by Destiny — Pray with Sincerity', width / 2, 115);
+  
+  ctx.strokeStyle = 'rgba(255, 141, 161, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(100, 135);
+  ctx.lineTo(width - 100, 135);
+  ctx.stroke();
+  
+  ctx.fillStyle = '#163f2b';
+  ctx.font = 'normal 18px "Georgia", serif';
+  ctx.fillText(`${currentLang === 'vi' ? 'Câu hỏi' : 'Question'}: ${kinhDichQuestion}`, width / 2, 165);
+  
+  // 4. Draw Hexagram structures
+  const hasChanging = selectedKdQueBien !== null;
+  const primaryBinary = kinhDichCasts.map(c => (c === 7 || c === 9) ? '1' : '0').join('');
+  
+  const drawHexagramOnCanvas = (centerX, centerY, binaryStr, castValues) => {
+    const lineW = 140;
+    const lineH = 7;
+    const lineGap = 9;
+    const startX = centerX - lineW / 2;
+    
+    for (let i = 0; i < 6; i++) {
+      const bit = binaryStr[i];
+      const currentY = centerY - i * (lineH + lineGap);
+      const val = castValues ? castValues[i] : null;
+      const isMoving = val === 6 || val === 9;
+      
+      if (bit === '1') {
+        ctx.fillStyle = '#b93a51';
+        ctx.fillRect(startX, currentY, lineW, lineH);
+        
+        if (isMoving) {
+          ctx.fillStyle = '#a67936';
+          ctx.beginPath();
+          ctx.arc(centerX, currentY + lineH/2, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else {
+        ctx.fillStyle = '#1b5336';
+        const segmentW = lineW * 0.44;
+        ctx.fillRect(startX, currentY, segmentW, lineH);
+        ctx.fillRect(startX + lineW * 0.56, currentY, segmentW, lineH);
+        
+        if (isMoving) {
+          ctx.strokeStyle = '#ff8da1';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          const xSize = 3;
+          ctx.moveTo(centerX - xSize, currentY + lineH/2 - xSize);
+          ctx.lineTo(centerX + xSize, currentY + lineH/2 + xSize);
+          ctx.moveTo(centerX + xSize, currentY + lineH/2 - xSize);
+          ctx.lineTo(centerX - xSize, currentY + lineH/2 + xSize);
+          ctx.stroke();
+        }
+      }
+    }
+  };
+  
+  let primaryNameY = 320;
+  
+  if (hasChanging) {
+    const pCenter = 240;
+    const sCenter = 560;
+    const drawY = 280;
+    
+    // Primary
+    drawHexagramOnCanvas(pCenter, drawY, primaryBinary, kinhDichCasts);
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 18px "Times New Roman", Georgia, serif';
+    ctx.fillText(currentLang === 'vi' ? 'Quẻ Chủ' : 'Primary Hexagram', pCenter, 195);
+    ctx.fillStyle = '#163f2b';
+    ctx.font = 'bold 16px "Georgia", serif';
+    ctx.fillText(currentLang === 'vi' ? selectedKdQue.name.split(': ')[1] : selectedKdQue.name_en.split(': ')[1], pCenter, 310);
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 13px "Georgia", serif';
+    ctx.fillText(currentLang === 'vi' ? selectedKdQue.auspice : selectedKdQue.auspice_en, pCenter, 330);
+    
+    // Arrow
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 36px "Times New Roman", serif';
+    ctx.fillText('➔', width / 2, 250);
+    ctx.font = 'bold 11px "Georgia", serif';
+    ctx.fillText(currentLang === 'vi' ? 'BIẾN' : 'CHANGES', width / 2, 275);
+    
+    // Secondary
+    const secBinary = kinhDichCasts.map(c => {
+      if (c === 6) return '1';
+      if (c === 9) return '0';
+      return (c === 7) ? '1' : '0';
+    }).join('');
+    drawHexagramOnCanvas(sCenter, drawY, secBinary, null);
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 18px "Times New Roman", Georgia, serif';
+    ctx.fillText(currentLang === 'vi' ? 'Quẻ Biến' : 'Secondary Hexagram', sCenter, 195);
+    ctx.fillStyle = '#163f2b';
+    ctx.font = 'bold 16px "Georgia", serif';
+    ctx.fillText(currentLang === 'vi' ? selectedKdQueBien.name.split(': ')[1] : selectedKdQueBien.name_en.split(': ')[1], sCenter, 310);
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 13px "Georgia", serif';
+    ctx.fillText(currentLang === 'vi' ? selectedKdQueBien.auspice : selectedKdQueBien.auspice_en, sCenter, 330);
+    
+    primaryNameY = 350;
+  } else {
+    const center = width / 2;
+    const drawY = 280;
+    drawHexagramOnCanvas(center, drawY, primaryBinary, kinhDichCasts);
+    
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 22px "Times New Roman", Georgia, serif';
+    ctx.fillText(currentLang === 'vi' ? selectedKdQue.name : selectedKdQue.name_en, center, 195);
+    ctx.fillStyle = '#163f2b';
+    ctx.font = 'bold 16px "Georgia", serif';
+    ctx.fillText(currentLang === 'vi' ? selectedKdQue.auspice : selectedKdQue.auspice_en, center, 310);
+    
+    primaryNameY = 330;
+  }
+  
+  // 5. General meanings
+  let nextY = primaryNameY + 30;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#163f2b';
+  ctx.font = 'bold 18px "Georgia", serif';
+  ctx.fillText(currentLang === 'vi' ? '■ Ý Nghĩa Quẻ Dịch:' : '■ Hexagram Meaning:', 60, nextY);
+  
+  nextY += 25;
+  ctx.fillStyle = '#444';
+  ctx.font = 'italic 15px "Georgia", serif';
+  nextY = wrapCanvasText(ctx, currentLang === 'vi' ? selectedKdQue.desc : selectedKdQue.desc_en, 60, nextY, width - 120, 22);
+  
+  nextY += 5;
+  ctx.fillStyle = '#222';
+  ctx.font = 'normal 15px "Georgia", serif';
+  nextY = wrapCanvasText(ctx, currentLang === 'vi' ? selectedKdQue.meaning : selectedKdQue.meaning_en, 60, nextY, width - 120, 22);
+  
+  // 6. Detailed categories
+  nextY += 15;
+  ctx.fillStyle = '#163f2b';
+  ctx.font = 'bold 18px "Georgia", serif';
+  ctx.fillText(currentLang === 'vi' ? '■ Luận Giải Chi Tiết:' : '■ Detailed Interpretation:', 60, nextY);
+  
+  const cats = [
+    { label_vi: 'Sự nghiệp', label_en: 'Career', text_vi: selectedKdQue.career, text_en: selectedKdQue.career_en, icon: '💼' },
+    { label_vi: 'Tình duyên', label_en: 'Love', text_vi: selectedKdQue.love, text_en: selectedKdQue.love_en, icon: '❤️' },
+    { label_vi: 'Tài lộc', label_en: 'Wealth', text_vi: selectedKdQue.wealth, text_en: selectedKdQue.wealth_en, icon: '💰' },
+    { label_vi: 'Sức khỏe', label_en: 'Health', text_vi: selectedKdQue.health, text_en: selectedKdQue.health_en, icon: '🏥' }
+  ];
+  
+  nextY += 25;
+  cats.forEach(cat => {
+    ctx.fillStyle = '#c94a61';
+    ctx.font = 'bold 15px "Georgia", serif';
+    const label = `${cat.icon} ${currentLang === 'vi' ? cat.label_vi : cat.label_en}: `;
+    ctx.fillText(label, 60, nextY);
+    
+    const labelWidth = ctx.measureText(label).width;
+    ctx.fillStyle = '#333';
+    ctx.font = 'normal 15px "Georgia", serif';
+    nextY = wrapCanvasText(ctx, currentLang === 'vi' ? cat.text_vi : cat.text_en, 60 + labelWidth, nextY, width - 120 - labelWidth, 22);
+    nextY += 8;
+  });
+  
+  // 7. Red Stamp Seal
+  ctx.save();
+  ctx.translate(width - 150, height - 150);
+  ctx.rotate(-10 * Math.PI / 180);
+  ctx.strokeStyle = '#ff8da1';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(0, 0, 85, 85);
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(5, 5, 75, 75);
+  ctx.fillStyle = '#ff8da1';
+  ctx.font = 'bold 15px "Georgia", serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(currentLang === 'vi' ? 'CHU' : 'ICHING', 42, 38);
+  ctx.fillText(currentLang === 'vi' ? 'DỊCH' : 'ORACLE', 42, 60);
+  ctx.restore();
+  
+  // 8. Trigger Download
+  try {
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = `Que_Kinh_Dich_Que_So_${selectedKdQue.id}.png`;
+    link.href = dataURL;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(t('toast.kd_save_success'));
+  } catch (err) {
+    console.error("Failed to export I Ching image: ", err);
+    alert(t('toast.save_error'));
+  }
+}
+
+// Expose Kinh Dich functions to global scope
+window.startKinhDichDivination = startKinhDichDivination;
+window.shakeCoins = shakeCoins;
+window.showKinhDichResult = showKinhDichResult;
+window.resetKinhDich = resetKinhDich;
+window.saveKinhDichAsImage = saveKinhDichAsImage;
+
 // Listen for language changes and update dynamic content
 window.addEventListener('langChanged', function() {
   userWish = t('msg.wish_default');
   // Re-render fortune result if currently showing
   if (currentStep === 'result' && selectedQue) {
     revealFortune();
+  }
+  // Re-render I Ching result if showing
+  if (activeTab === 'kinhdich' && kinhDichCasts.length >= 6 && selectedKdQue) {
+    showKinhDichResult();
   }
 });
