@@ -2252,9 +2252,9 @@ input[type="text"]:focus, textarea:focus {
   content: '';
   width: 44%;
   height: 100%;
-  background: linear-gradient(90deg, #1b5336, #328c5a, #1b5336);
+  background: linear-gradient(90deg, #b93a51, #e65c73, #b93a51);
   border-radius: 2px;
-  box-shadow: 0 0 6px rgba(50, 140, 90, 0.5);
+  box-shadow: 0 0 6px rgba(230, 92, 115, 0.5);
 }
 
 /* Changing Hào markers (Lão Dương / Lão Âm) */
@@ -2318,6 +2318,7 @@ input[type="text"]:focus, textarea:focus {
 }
 
 .hexagram-lines-draw .hao-yang, .hexagram-lines-draw .hao-yin {
+  flex: none;
   height: 6px;
 }
 
