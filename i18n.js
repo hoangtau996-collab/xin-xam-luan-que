@@ -9,7 +9,7 @@ const TRANSLATIONS = {
 
     // Navigation
     'nav.fortune': '⛩️ Xin Xăm Gieo Quẻ',
-    'nav.kinhdich': '🔮 Gieo Quẻ Kinh Dịch',
+    'nav.kinhdich': '☯️ Gieo Quẻ Kinh Dịch',
     'nav.meditation': '🌸 Tịnh Tâm Gõ Mõ',
 
     // Step 1: Gieo Keo
@@ -192,7 +192,7 @@ const TRANSLATIONS = {
 
     // Navigation
     'nav.fortune': '⛩️ Draw Fortune Sticks',
-    'nav.kinhdich': '🔮 I Ching Divination',
+    'nav.kinhdich': '☯️ I Ching Divination',
     'nav.meditation': '🌸 Temple Meditation',
 
     // Step 1: Cast Moon Blocks

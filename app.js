@@ -1511,17 +1511,21 @@ function startKinhDichDivination() {
   }
   
   // Reset coins to default visual state
-  coin1.style.transform = 'translate3d(0, 0, 0) rotateY(0deg)';
-  coin2.style.transform = 'translate3d(0, 0, 0) rotateY(0deg)';
-  coin3.style.transform = 'translate3d(0, 0, 0) rotateY(0deg)';
-  coin1.style.left = '40px'; coin1.style.top = '75px';
-  coin2.style.left = '110px'; coin2.style.top = '50px';
-  coin3.style.left = '95px'; coin3.style.top = '110px';
+  coin1.style.transform = 'translate3d(-35px, 10px, 0) rotateY(0deg)';
+  coin2.style.transform = 'translate3d(35px, -20px, 0) rotateY(0deg)';
+  coin3.style.transform = 'translate3d(20px, 40px, 0) rotateY(0deg)';
 }
 
 // Simulate tossing 3 coins to build a hexagram line (1 of 6)
 function shakeCoins() {
   if (isKinhDichShaking || kinhDichCasts.length >= 6) return;
+  
+  // IMMEDIATELY initialize/resume AudioContext inside direct user gesture trace for mobile support
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  
   isKinhDichShaking = true;
   
   showToast(t('toast.kd_shaking'));
@@ -1533,10 +1537,10 @@ function shakeCoins() {
   
   coinsPlate.classList.add('plate-shaking');
   
-  // Animate coins inside the bowl
+  // Animate coins inside the bowl using hardware-accelerated translate3d
   const animateCoin = (coinEl) => {
-    const randX = Math.floor(Math.random() * 90) + 15; // Random position bounds
-    const randY = Math.floor(Math.random() * 90) + 15;
+    const randX = Math.floor(Math.random() * 110) - 55; // relative offset
+    const randY = Math.floor(Math.random() * 110) - 55;
     const spinsX = (Math.floor(Math.random() * 5) + 5) * 360; 
     const spinsY = (Math.floor(Math.random() * 5) + 5) * 360;
     
@@ -1544,9 +1548,7 @@ function shakeCoins() {
     const isHead = Math.random() < 0.5;
     const finalRotY = spinsY + (isHead ? 0 : 180);
     
-    coinEl.style.left = `${randX}px`;
-    coinEl.style.top = `${randY}px`;
-    coinEl.style.transform = `rotateX(${spinsX}deg) rotateY(${finalRotY}deg)`;
+    coinEl.style.transform = `translate3d(${randX}px, ${randY}px, 0) rotateX(${spinsX}deg) rotateY(${finalRotY}deg)`;
     
     return isHead;
   };
