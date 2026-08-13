@@ -418,6 +418,12 @@ function applyLanguage() {
     el.title = t(key);
   });
 
+  // Update placeholder attribute elements
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
+
   // Update language toggle button label
   var langLabel = document.getElementById('lang-label');
   if (langLabel) {

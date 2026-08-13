@@ -1134,6 +1134,7 @@ function switchTab(tabId) {
   } else if (tabId === 'kinhdich') {
     btnTabKinhDich.classList.add('active');
     kinhdichAppView.classList.remove('hidden');
+    resetKinhDich();
   } else if (tabId === 'meditation') {
     btnTabMeditation.classList.add('active');
     meditationAppView.classList.remove('hidden');
@@ -1468,15 +1469,30 @@ function playCoinClink() {
   }
 }
 
+// Navigation helper between Kinh Dịch screens
+function showKdSection(sectionId) {
+  const sections = [secKdPrep, secKdCast, secKdResult];
+  sections.forEach(sec => {
+    if (sec) {
+      sec.classList.remove('active');
+      sec.classList.add('hidden'); // Ensure hidden class is added so display is none !important
+    }
+  });
+  
+  const activeSec = sectionId === 'prep' ? secKdPrep : (sectionId === 'cast' ? secKdCast : secKdResult);
+  if (activeSec) {
+    activeSec.classList.add('active');
+    activeSec.classList.remove('hidden');
+  }
+}
+
 // Transition from preparation screen to casting screen
 function startKinhDichDivination() {
   const wish = kdQuestionInput.value.trim();
   kinhDichQuestion = wish ? wish : (currentLang === 'vi' ? 'Cầu vạn sự hanh thông' : 'Pray for all to go smoothly');
   
   // Transition screens
-  secKdPrep.classList.add('hidden');
-  secKdCast.classList.remove('hidden');
-  secKdResult.classList.add('hidden');
+  showKdSection('cast');
   
   // Reset I Ching state
   kinhDichCasts = [];
@@ -1737,8 +1753,7 @@ function showKinhDichResult() {
   document.getElementById('kd-detail-wealth').textContent = currentLang === 'vi' ? selectedKdQue.wealth : selectedKdQue.wealth_en;
   document.getElementById('kd-detail-health').textContent = currentLang === 'vi' ? selectedKdQue.health : selectedKdQue.health_en;
   
-  secKdCast.classList.add('hidden');
-  secKdResult.classList.remove('hidden');
+  showKdSection('result');
 }
 
 // Help assign color badges to auspice names
@@ -1756,9 +1771,7 @@ function resetKinhDich() {
   selectedKdQueBien = null;
   kdQuestionInput.value = '';
   
-  secKdPrep.classList.remove('hidden');
-  secKdCast.classList.add('hidden');
-  secKdResult.classList.add('hidden');
+  showKdSection('prep');
   
   btnShakeCoins.onclick = shakeCoins;
   btnShakeText.textContent = t('kinhdich.btn_shake');
