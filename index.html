@@ -334,6 +334,30 @@
             <input type="text" id="kd-question" class="custom-input" placeholder="Ví dụ: Công danh sự nghiệp năm nay thế nào..." style="width: 100%;" data-i18n-placeholder="kinhdich.question_placeholder">
           </div>
           
+          <!-- Casting Mode Selector -->
+          <div class="mode-selector" style="max-width: 500px; margin: 0 auto 28px;">
+            <label class="mode-option">
+              <input type="radio" name="kd-cast-mode" value="sequential" checked>
+              <div class="mode-card">
+                <span class="mode-icon">🪙</span>
+                <div class="mode-info">
+                  <div class="mode-title" data-i18n="kinhdich.mode_sequential">Gieo Từng Hào</div>
+                  <div class="mode-desc" data-i18n="kinhdich.mode_sequential_desc">Lắc xu 6 lần từ dưới lên trên để chiêm nghiệm tiến trình.</div>
+                </div>
+              </div>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="kd-cast-mode" value="instant">
+              <div class="mode-card">
+                <span class="mode-icon">⚡</span>
+                <div class="mode-info">
+                  <div class="mode-title" data-i18n="kinhdich.mode_instant">Gieo Nhanh 6 Hào</div>
+                  <div class="mode-desc" data-i18n="kinhdich.mode_instant_desc">Lắc xu 1 lần duy nhất để gieo cùng lúc toàn bộ 6 hào.</div>
+                </div>
+              </div>
+            </label>
+          </div>
+          
           <div class="btn-group-center">
             <button class="btn btn-red ripple" onclick="startKinhDichDivination()">
               <span data-i18n="kinhdich.btn_start">Bắt Đầu Gieo Quẻ</span>

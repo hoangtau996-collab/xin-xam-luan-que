@@ -16,6 +16,7 @@ let kinhDichQuestion = '';
 let isKinhDichShaking = false;
 let selectedKdQue = null;
 let selectedKdQueBien = null;
+let kinhDichMode = 'sequential'; // 'sequential' or 'instant'
 
 // Meditation Section State
 let incenseDuration = 120; // Default 120s (2 minutes)
@@ -1491,6 +1492,10 @@ function startKinhDichDivination() {
   const wish = kdQuestionInput.value.trim();
   kinhDichQuestion = wish ? wish : (currentLang === 'vi' ? 'Cầu vạn sự hanh thông' : 'Pray for all to go smoothly');
   
+  // Read cast mode option
+  const modeRadio = document.querySelector('input[name="kd-cast-mode"]:checked');
+  kinhDichMode = modeRadio ? modeRadio.value : 'sequential';
+  
   // Transition screens
   showKdSection('cast');
   
@@ -1502,7 +1507,13 @@ function startKinhDichDivination() {
   // Reset Shake Button
   btnShakeCoins.disabled = false;
   btnShakeCoins.onclick = shakeCoins;
-  btnShakeText.textContent = t('kinhdich.btn_shake');
+  
+  if (kinhDichMode === 'instant') {
+    kdCastStepLabel.textContent = '6';
+    btnShakeText.textContent = t('kinhdich.btn_shake_instant');
+  } else {
+    btnShakeText.textContent = t('kinhdich.btn_shake');
+  }
   
   // Reset visual lines slot stack to placeholders
   for (let i = 1; i <= 6; i++) {
@@ -1577,7 +1588,53 @@ function shakeCoins() {
     clearInterval(rattleInterval);
     coinsPlate.classList.remove('plate-shaking');
     
-    // Count heads/tails
+    // Instant casting mode: generate all 6 lines simultaneously
+    if (kinhDichMode === 'instant') {
+      kinhDichCasts = [];
+      for (let s = 1; s <= 6; s++) {
+        const headsCount = Math.floor(Math.random() * 4);
+        let castValue = 8;
+        if (headsCount === 0) castValue = 6;
+        else if (headsCount === 1) castValue = 7;
+        else if (headsCount === 2) castValue = 8;
+        else if (headsCount === 3) castValue = 9;
+        
+        kinhDichCasts.push(castValue);
+        
+        // Draw the line into slot
+        const slot = document.getElementById(`kd-slot-${s}`);
+        if (slot) {
+          const lineEl = document.createElement('div');
+          if (castValue === 7) {
+            lineEl.className = 'hao-yang';
+          } else if (castValue === 8) {
+            lineEl.className = 'hao-yin';
+          } else if (castValue === 6) {
+            lineEl.className = 'hao-yin hao-moving-yin';
+          } else if (castValue === 9) {
+            lineEl.className = 'hao-yang hao-moving';
+          }
+          
+          const placeholder = slot.querySelector('.hao-placeholder');
+          if (placeholder) {
+            slot.replaceChild(lineEl, placeholder);
+          }
+        }
+      }
+      
+      kdCastStepLabel.textContent = '6';
+      kdCoinsResultMsg.textContent = t('kinhdich.coins_instant_complete');
+      
+      playWoodClack(0, 1.0, 0.7);
+      
+      btnShakeText.textContent = currentLang === 'vi' ? 'Xem Kết Quả Quẻ Dịch' : 'View Divination Results';
+      btnShakeCoins.onclick = showKinhDichResult;
+      
+      isKinhDichShaking = false;
+      return;
+    }
+    
+    // Count heads/tails for sequential mode
     const headsCount = (coin1Head ? 1 : 0) + (coin2Head ? 1 : 0) + (coin3Head ? 1 : 0);
     
     // Determine Hào Value:
