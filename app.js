@@ -1810,6 +1810,42 @@ function showKinhDichResult() {
   document.getElementById('kd-detail-wealth').textContent = currentLang === 'vi' ? selectedKdQue.wealth : selectedKdQue.wealth_en;
   document.getElementById('kd-detail-health').textContent = currentLang === 'vi' ? selectedKdQue.health : selectedKdQue.health_en;
   
+  // Inject Biến Quẻ / Tĩnh Quẻ dynamic explanation
+  const biendichNote = document.getElementById('kd-biendich-note');
+  const biendichDesc = document.getElementById('kd-biendich-desc');
+  if (biendichNote && biendichDesc) {
+    biendichNote.classList.remove('hidden');
+    let explanation = '';
+    if (hasChangingLines && selectedKdQueBien) {
+      // Find changing lines numbers (1-indexed)
+      const movingHaoNums = [];
+      for (let i = 0; i < 6; i++) {
+        if (kinhDichCasts[i] === 6 || kinhDichCasts[i] === 9) {
+          movingHaoNums.push(i + 1);
+        }
+      }
+      const haoLabel = currentLang === 'vi' ? 'Hào' : 'Line';
+      const movingHaoStr = movingHaoNums.map(n => `${haoLabel} ${n}`).join(', ');
+      
+      if (currentLang === 'vi') {
+        const queChuName = selectedKdQue.name.split(': ')[1] || selectedKdQue.name;
+        const queBienName = selectedKdQueBien.name.split(': ')[1] || selectedKdQueBien.name;
+        explanation = `Quẻ Chủ <strong>${queChuName}</strong> đại diện cho hoàn cảnh ở <strong>Hiện Tại</strong>. Các điểm chuyển dịch then chốt là <strong>${movingHaoStr}</strong> (Hào Động), các nhân tố này thay đổi thuộc tính âm-dương để dẫn dắt sự việc phát triển thành Quẻ Biến <strong>${queBienName}</strong> đại diện cho xu hướng <strong>Tương Lai</strong> hoặc kết quả cuối cùng.`;
+      } else {
+        const queChuName = selectedKdQue.name_en.split(': ')[1] || selectedKdQue.name_en;
+        const queBienName = selectedKdQueBien.name_en.split(': ')[1] || selectedKdQueBien.name_en;
+        explanation = `The Primary Hexagram <strong>${queChuName}</strong> represents your <strong>Present</strong> situation. The pivotal turning points are <strong>${movingHaoStr}</strong> (Changing Lines), which mutate their attributes to transition the situation into the Secondary Hexagram <strong>${queBienName}</strong>, representing the <strong>Future</strong> outcome.`;
+      }
+    } else {
+      if (currentLang === 'vi') {
+        explanation = `Quẻ gieo được là một <strong>Quẻ Tĩnh</strong> (không có hào động biến đổi). Sự việc đang ở trạng thái ổn định và hội tụ đầy đủ thông điệp ngay trong Quẻ Chủ hiện thời, không có sự biến dịch lớn nào xảy ra trong tương lai gần.`;
+      } else {
+        explanation = `The cast result is a <strong>Static Hexagram</strong> (no changing lines). Your situation is in a stable state. All guidance and warnings are already consolidated within this single Primary Hexagram, with no major changes expected in the near future.`;
+      }
+    }
+    biendichDesc.innerHTML = explanation;
+  }
+  
   showKdSection('result');
 }
 
@@ -1827,6 +1863,9 @@ function resetKinhDich() {
   selectedKdQue = null;
   selectedKdQueBien = null;
   kdQuestionInput.value = '';
+  
+  const biendichNote = document.getElementById('kd-biendich-note');
+  if (biendichNote) biendichNote.classList.add('hidden');
   
   showKdSection('prep');
   
